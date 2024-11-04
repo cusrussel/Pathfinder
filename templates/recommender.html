@@ -1,0 +1,388 @@
+{% extends 'navigation.html' %} {% block content %}
+
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+
+<script src = "/static/js/index.js"></script>
+
+<div class="r-container">
+  <div class="r-content" id = "r-content">
+    <div class="r-left-info">
+      <div class = "r-left-information">
+        <h2>TAKE THE TEST</h2>
+        <h1>Find the Best Path for Your Future</h1>
+        <p>Take the test to match with programs tailored 
+          your strengths and ambitions</p>
+          <br>
+          <div>
+            <button onclick = "hideContent()">START NOW</button>
+          </div>
+        <span>Find the program that fits your strengths and goals with a quick 5-minute test! Get started now.</span>
+      
+      </div>
+    </div>
+    <div class="r-right-info">
+      <img class="r-right-picture" src="/static/images/recommender/recom-image.svg" alt="">
+    </div>
+  </div>
+
+  <div class= "r-questions-content" id = "r-questions">
+    <form action="" id="prediction-form">
+      <div class = "r-questions" id="question-1">
+        <h1>What is your gender?</h1>
+        <div class = "r-buttons">
+          <button type="button" data-field = "sex" data-value = "Male" onclick="nextQuestion(event, 1)">Male</button>
+          <button type="button" data-field = "sex" data-value = "Female" onclick="nextQuestion(event, 1)">Female</button>
+          <button type="button" data-field = "sex" data-value = "Prefer not to say" onclick="nextQuestion(event, 1)">Prefer not to say</button>
+        </div>
+      </div>
+
+      <div id="question-2" class = "hidden">
+        <div class = "r-questions">
+          <h1>What is your household monthly income?</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "income" data-value = "Less than 9,100 to 18,200" onclick="nextQuestion(event, 2)">Less than 9,100 to 18,200</button>
+                <button style = "font-size: 16px; width: 170px; height: 90px;"type = "button" data-field = "income" data-value = "18,200 to 109,200" onclick="nextQuestion(event, 2)">18,200 to 109,200</button>
+                <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "income" data-value = "109,200 to 182,000 and above" onclick="nextQuestion(event, 2)">109,200 to 182,000 and above</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-3" class = "hidden">
+        <div class = "r-questions">
+          <h1>Describe your personality so we can get to know you better!<h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 17px;" type="button" data-field = "dummy1" data-value = "Continue" onclick="nextQuestion(event, 3)">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-4" class = "hidden">
+        <div class = "r-questions">
+          <h1>Do you feel more energized by:</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;" type="button" data-field = "1st_state" data-value = "I" onclick="nextQuestion(event, 4)">Spending time alone or in small, intimate groups</button>
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;" type = "button" data-field = "1st_state" data-value = "E" onclick="nextQuestion(event, 4)">Being in larger groups and social settings</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-5" class = "hidden">
+        <div class = "r-questions">
+          <h1>How do you prefer to take in information?</h1>
+          <div class = "r-buttons"> 
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;" type="button" data-field = "2nd_state" data-value = "S" onclick="nextQuestion(event, 5)">Prefers factual, concrete details.</button>
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;"type = "button" data-field = "2nd_state" data-value = "N" onclick="nextQuestion(event, 5)">Enjoys patterns, abstract concepts, and theories.</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-6" class = "hidden">
+        <div class = "r-questions">
+          <h1>When faced with a decision, do you prefer to:</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;" type="button" data-field = "3rd_state" data-value = "T" onclick="nextQuestion(event, 6)">Values established rules and logical reasoning.</button>
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;"type = "button" data-field = "3rd_state" data-value = "F" onclick="nextQuestion(event, 6)">Considers personal values and impact on others.</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-7" class = "hidden">
+        <div class = "r-questions">
+          <h1>When socializing, do you tent to:</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;" type="button" data-field = "4th_state" data-value = "J" onclick="nextQuestion(event, 7)">Engage with familiar people in structured conversations</button>
+            <button style = "font-size: 15px; width: 210px; height: 90px; padding: 5px;"type = "button" data-field = "4th_state" data-value = "P" onclick="nextQuestion(event, 7)">Enjoy meeting new people and going with the flow</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-8" class = "hidden">
+        <div class = "r-questions">
+          <h1>Are you open for programs not related to the strand?</h1>
+          <div class = "r-buttons">
+              <button type="button" data-field = "isConnected_strand" data-value = "Yes" onclick="nextQuestion(event, 8)">Yes</button>
+              <button type="button" data-field = "isConnected_strand" data-value = "No" onclick="nextQuestion(event, 8)">No</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-9" class = "hidden">
+        <div class = "r-questions">
+          <h1>What is your current academic strand?</h1>
+          <div class = "r-buttons">
+            <button class="tooltip" type="button" data-field = "strand" data-value = "ABM" onclick="nextQuestion(event, 9)"> <span class="tooltiptext">Accountancy, Business and Management</span>ABM</button>
+            <button class="tooltip" type="button" data-field = "strand" data-value = "STEM" onclick="nextQuestion(event, 9)"> <span class="tooltiptext">Science, Technology, Engineering, and Mathematics</span> STEM</button>
+            <button class="tooltip" type="button" data-field = "strand" data-value = "HUMSS" onclick="nextQuestion(event, 9)"> <span class="tooltiptext"> Humanities and Social Science</span> HUMSS</button>
+            <button class="tooltip" type="button" data-field = "strand" data-value = "TVL Track" onclick="nextQuestion(event, 9)"> <span class="tooltiptext"> Technical-Vocational-Livelihood </span> TVL</button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="question-10" class = "hidden">
+        <div class = "r-questions">
+          <h1>In which specialized subject have you received your highest grade?</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Business Math" onclick="nextQuestion(event, 10)">Business Math</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Fundamentals of Accounting" onclick="nextQuestion(event, 10)">Fundamentals of Accounting</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Business and Management" onclick="nextQuestion(event, 10)">Business and Management</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Applied Economics" onclick="nextQuestion(event, 10)">Applied Economics</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Organization and Management" onclick="nextQuestion(event, 10)">Organization and Management</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Business Finance" onclick="nextQuestion(event, 10)">Business Finance</button>
+            <button style = "font-size: 14px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Business Ethics and Social Responsibility" onclick="nextQuestion(event, 10)">Business Ethics and Social Responsibility</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Business Marketing" onclick="nextQuestion(event, 10)">Business Marketing</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Business Enterprise Simulation" onclick="nextQuestion(event, 10)">Business Enterprise Simulation</button>
+
+          </div>
+        </div>
+      </div>
+
+      <div id="question-11" class = "hidden">
+        <div class = "r-questions">
+          <h1>In which specialized subject have you received your highest grade?</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Calculus" onclick="nextQuestion(event,11)">Calculus</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "General Physics" onclick="nextQuestion(event, 11)">General Physics</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "General Chemistry" onclick="nextQuestion(event, 11)">General Chemistry</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "General Biology" onclick="nextQuestion(event, 11)">General Biology</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Research / Capstone Project" onclick="nextQuestion(event, 11)">Research / Capstone Project</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-12" class = "hidden">
+        <div class = "r-questions">
+          <h1>In which specialized subject have you received your highest grade?</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Philippine Politics and Governance" onclick="nextQuestion(event, 12)">Philippine Politics and Governance</button>
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Creative Writing / Malikhaing Pagsulat" onclick="nextQuestion(event, 12)">Creative Writing / Malikhaing Pagsulat</button>
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Creative Nonfiction: The Literary Essay" onclick="nextQuestion(event, 12)">Creative Nonfiction: The Literary Essay</button>
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Disciplines and Ideas in the Social Sciences" onclick="nextQuestion(event, 12)">Disciplines and Ideas in the Social Sciences</button>
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Disciplines and Ideas in the Applied Social Sciences" onclick="nextQuestion(event, 12)">Disciplines and Ideas in the Applied Social Sciences</button>
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Introduction to World Religions and Belief Systems" onclick="nextQuestion(event, 12)">Introduction to World Religions and Belief Systems</button>
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Trends, Networks and Critical Thinking in the 21st Century Culture" onclick="nextQuestion(event, 12)">Trends, Networks and Critical Thinking in the 21st Century Culture</button>
+            <button style = "font-size: 15px; width: 190px; height: 90px;" type="button" data-field = "specialized_subj" data-value = "Community Engagement, Solidarity and Citizenship" onclick="nextQuestion(event, 12)">Community Engagement, Solidarity and Citizenship</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-13" class = "hidden">
+        <div class = "r-questions">
+          <h1>In which specialized subject have you received your highest grade?</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 17px; width: 170px; height: 90px;" type="button" data-field = "specialization" data-value = "Cookery" onclick="nextQuestion(event, 13)">Cookery</button>
+              <button style = "font-size: 17px; width: 170px; height: 90px;" type="button" data-field = "specialization" data-value = "ICT/CSS" onclick="nextQuestion(event, 13)">ICT/CCS</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-14" class = "hidden">
+        <div class = "r-questions">
+          <h1>What core subjects have you completed that you feel confident or capable in?</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Oral Communication" onclick="nextQuestion(event, 14)">Oral Communication</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Reading and Writing Skills" onclick="nextQuestion(event, 14)">Reading and Writing Skills</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "21st Century Literature from the Philippines and the World" onclick="nextQuestion(event, 14)">21st Century Literature from the Philippines and the World</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Komunikasyon at Pananaliksik sa Wika at Kulturang Pilipino" onclick="nextQuestion(event, 14)">Komunikasyon at Pananaliksik sa Wika at Kulturang Pilipino</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Pagbasa at Pagsusuri ng Iba't ibang Teksto Tungo sa Pananaliksik" onclick="nextQuestion(event, 14)">Pagbasa at Pagsusuri ng Iba't ibang Teksto Tungo sa Pananaliksik</button>
+            <button style = "font-size: 13px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Introduction to the Philosophy of the Human Person / Pambungad sa Pilosopiya ng Tao" onclick="nextQuestion(event, 14)">Introduction to the Philosophy of the Human Person / Pambungad sa Pilosopiya ng Tao</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "General Mathematics" onclick="nextQuestion(event, 14)">General Mathematics</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Statistics and Probability" onclick="nextQuestion(event, 14)">Statistics and Probability</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Contemporary Philippine Arts from the Regions" onclick="nextQuestion(event, 14)">Contemporary Philippine Arts from the Regions</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Earth and Life Science" onclick="nextQuestion(event, 14)">Earth and Life Science</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Physical Science" onclick="nextQuestion(event, 14)">Physical Science</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Media and Information Literacy" onclick="nextQuestion(event, 14)">Media and Information Literacy</button>
+            <button style = "font-size: 14px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Personal Development/Pansariling Kaunlaran" onclick="nextQuestion(event, 14)">Personal Development/Pansariling Kaunlaran</button>
+            <button style = "font-size: 15px; width: 190px; height: 100px;" type="button" data-field = "core_subj" data-value = "Physical Education and Health" onclick="nextQuestion(event, 14)">Physical Education and Health</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-15" class = "hidden">
+        <div class = "r-questions">
+          <h1>Tell us about the areas where you feel most skilled or capable.</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 17px;" type="button" data-field = "dummy2" data-value = "pContinue" onclick="nextQuestion(event, 15)">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-16" class = "hidden">
+        <div class = "r-questions">
+          <h1>Please select your primary skills.</h1>
+          <div class = "r-buttons">
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Technical and Analytical Skills" onclick="nextQuestion(event, 16)">Technical and Analytical Skills</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Creative Skills" onclick="nextQuestion(event, 16)">Creative Skills</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Leadership and Management Skills" onclick="nextQuestion(event, 16)">Leadership and Management Skills</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Communication Skills" onclick="nextQuestion(event, 16)">Communication Skills</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Collaboration and Teamwork" onclick="nextQuestion(event, 16)">Collaboration and Teamwork</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Practical and Hands-On Skills" onclick="nextQuestion(event, 16)">Practical and Hands-On Skills</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Business and Entrepreneurial Skills" onclick="nextQuestion(event, 16)">Business and Entrepreneurial Skills</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Languages and Cultural Understanding" onclick="nextQuestion(event, 16)">Languages and Cultural Understanding</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Health and Wellness Skills" onclick="nextQuestion(event, 16)">Health and Wellness Skills</button>
+              <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "p_skill" data-value = "Digital Literacy" onclick="nextQuestion(event, 16)">Digital Literacy</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-17" class = "hidden">
+        <div class = "r-questions">
+          <h1>Please select your secondary skills.</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Technical and Analytical Skills" onclick="nextQuestion(event, 17)">Technical and Analytical Skills</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Creative Skills" onclick="nextQuestion(event, 17)">Creative Skills</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Leadership and Management Skills" onclick="nextQuestion(event, 17)">Leadership and Management Skills</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Communication Skills" onclick="nextQuestion(event, 17)">Communication Skills</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Collaboration and Teamwork" onclick="nextQuestion(event, 17)">Collaboration and Teamwork</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Practical and Hands-On Skills" onclick="nextQuestion(event, 17)">Practical and Hands-On Skills</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Business and Entrepreneurial Skills" onclick="nextQuestion(event, 17)">Business and Entrepreneurial Skills</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Languages and Cultural Understanding" onclick="nextQuestion(event, 17)">Languages and Cultural Understanding</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Health and Wellness Skills" onclick="nextQuestion(event, 17)">Health and Wellness Skills</button>
+            <button style = "font-size: 15px; width: 170px; height: 90px;" type="button" data-field = "s_skill" data-value = "Digital Literacy" onclick="nextQuestion(event, 17)">Digital Literacy</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-18" class = "hidden">
+        <div class = "r-questions">
+          <h1>Let us know which topics capture your interest</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 17px;" type="button" data-field = "dummy3" data-value = "Continue" onclick="nextQuestion(event, 18)">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-19" class = "hidden">
+        <div class = "r-questions">
+          <h1> Please select your first area of interest.</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests1" data-value = "Talking/Presenting in front of people" onclick="nextQuestion(event, 19)">Talking/Presenting in front of people</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests1" data-value = "Drawing and creating digital designs" onclick="nextQuestion(event, 19)">Drawing and creating digital designs</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests1" data-value = "Managing a business" onclick="nextQuestion(event, 19)">Managing a business</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests1" data-value = "Learning things about technology" onclick="nextQuestion(event, 19)">Learning things about technology</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests1" data-value = "Physical ang Health Activities" onclick="nextQuestion(event, 19)">Physical ang Health Activities</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-20" class = "hidden">
+        <div class = "r-questions">
+          <h1>Please select your second area of interest.</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests2" data-value = "Interactive with people" onclick="nextQuestion(event, 20)">Interactive with people</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests2" data-value = "Editing Videos" onclick="nextQuestion(event, 20)">Editing Videos</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests2" data-value = "Organizing large-scale events" onclick="nextQuestion(event, 20)">Organizing large-scale events</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests2" data-value = "Solving math problems" onclick="nextQuestion(event, 20)">Solving math problems</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests2" data-value = "Taking care of others" onclick="nextQuestion(event, 20)">Taking care of others</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-21" class = "hidden">
+        <div class = "r-questions">
+          <h1>Please select your third area of interest.</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests3" data-value = "Performing on stage" onclick="nextQuestion(event, 21)">Performing on stage</button>
+            <button style = "font-size: 13px; width: 180px; height: 90px;" type="button" data-field = "interests3" data-value = "Dealing with designs of buildings/infrastructures" onclick="nextQuestion(event, 21)">Dealing with designs of buildings/infrastructures</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests3" data-value = "Analyzing financial data" onclick="nextQuestion(event, 21)">Analyzing financial data</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests3" data-value = "Programming" onclick="nextQuestion(event, 21)">Programming</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests3" data-value = "Helping others learn" onclick="nextQuestion(event, 21)">Helping others learn</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-22" class = "hidden">
+        <div class = "r-questions">
+          <h1>Please select your fourth area of interest.</h1>
+          <div class = "r-buttons">
+            <button style = "font-size: 15px; width: 180px; height: 90px;"type="button" data-field = "interests4" data-value = "Reading/Writing content" onclick="nextQuestion(event, 22)">Reading/Writing content</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests4" data-value = "Cooking and presenting dishes" onclick="nextQuestion(event, 22)">Cooking and presenting dishes</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests4" data-value = "Studying political systems" onclick="nextQuestion(event, 22)">Studying political systems</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests4" data-value = "Dealing with human behavior" onclick="nextQuestion(event, 22)">Dealing with human behavior</button>
+            <button style = "font-size: 15px; width: 180px; height: 90px;" type="button" data-field = "interests4" data-value = "Traveling" onclick="nextQuestion(event, 22)">Traveling</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div id="loader-container">
+    <div id="loader"></div>
+    <p id = "loader-msg">Preparing...</p>
+  </div>
+</div>
+
+<div class = "r-begin-container" id = "r-begin">
+  <div class = "r-begin" >
+    <div class = "r-begin-info">
+      <div class = "r-begin-infos">
+        <img src="/static/images/recommender/questionmark.svg" alt="">
+        <p>Each question must be answered in sequence, and there is
+          no option to return to previous questions or change your 
+          answers after submission.</p>
+        <button onclick= "begin()" >Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class = "r-result-content" id = "r-result">
+  <div class = "r-result-info">
+    <div class = "r-result-left">
+      <h1>RECOMMENDED</h1>
+      <h2>FOR YOU</h2>
+      <span style = "margin-top: 5px;" class = "r-result-left-line"></span>
+        <div class  = "r-result-programs">
+          <div class = "r-result-programs-container-two">
+            <img src="/static/images/recommender/top-two.svg" alt="">
+            <p id = "top-two" onclick="two()" ></p>
+          </div>
+
+          <div class = "r-result-programs-container-one">
+            <img src="/static/images/recommender/top-one.svg" alt="">
+            <p id = "top-one" onclick="one()"></p>
+          </div>
+
+          <div class = "r-result-programs-container-three">
+            <img src="/static/images/recommender/top-three.svg" alt="">
+            <p id = "top-three" onclick="three()"></p>
+          </div>
+        
+        </div>
+      <span class = "r-result-left-line"></span>
+      <div class = "r-result-program-def">
+        <p id = "result-info"></p>
+      </div>
+      <span class = "r-result-left-line"></span>
+      <div class = "r-result-left-buttons">
+        <button onclick = "hideContentAgain()" >Take again<img src="/static/images/recommender/retry.svg" alt=""> </button>
+        <button onclick = "toggleEmail()"> Send a copy<img src="/static/images/recommender/send.svg" alt=""></button>
+        <button onclick = "getHref()" >More info<img src="/static/images/recommender/info.svg" alt=""> </button>
+      </div>
+    </div>
+    <div class = "r-result-right">
+      <div class = "r-result-right-two">
+        <img id = "result-image-one">
+      </div>
+      <div class = "r-result-right-one">
+        <img id = "result-image-two">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class = "float-email-container" id = "float-email">
+  <div class = "float-email">
+    <div class = "float-email-nav">
+      <img onclick = "toggleEmail()" src="/static/images/recommender/cross.svg" alt="">
+    </div>  
+    <form action="/send-email" method="post" id="emailForm" onsubmit="return validateEmail()">
+      <input type="text" placeholder="Enter your email" name="email" id="emailInput">
+      <input type="submit" value="submit">
+    </form>
+  </div>
+</div>
+
+
+
+{% endblock %}

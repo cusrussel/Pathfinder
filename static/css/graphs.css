@@ -1,0 +1,496 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+* {
+  border-style: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins";
+  scroll-behavior: smooth;
+}
+
+.graph-main{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.graph-container{
+    margin-top: -20px;
+    width: 90%;
+    display: flex;
+    height: 90vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 10px; */
+}
+
+.graph-container-one{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 90%;
+    height: 50vh;
+    align-items: center;
+    justify-content: center;
+} 
+
+.graph-user{
+    height: 40vh;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.graph-user-total{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 19vh;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.graph-user-non-strand{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 19vh;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.graph-user-non-strand h1{
+    font-size: 15px;
+}
+
+.graph-user-total h1{
+    font-size: 20px;
+}
+
+.graph-demographic{
+    height: 40vh;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+#demographicChart{
+    height: 20px;
+    width: 20px;
+}
+
+.graph-demographic h1{
+    font-size: 20px;
+    width: 85%;
+}
+.graph-strands{
+    height: 40vh;
+    width: 50%;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.strand-title{
+    width: 85%;
+}
+
+.strand-title h1{
+    font-size: 18px;
+    padding: 10px;
+}
+
+.strand-infos{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 40vh;
+}
+
+.total-summary{
+    width: 80%;
+    border-radius: 20px;
+    background-color: #230b41;
+    height: 6vh;
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.no-summary{
+    width: 80%;
+    border-radius: 20px;
+    background-color: #AE9FCF;
+    height: 6vh;
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.stem-summary{
+    width: 80%;
+    border-radius: 20px;
+    background-color: #230b41;
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.abm-summary{
+    width: 80%;
+    border-radius: 20px;
+    background-color: #523762; 
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.humss-summary{
+    width: 80%;
+    border-radius: 20px;
+    background-color: #AE9FCF;
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.tvl-summary{
+    width: 80%;
+    border-radius: 20px;
+    background-color: #ffd4e1;
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.stem-summary h2, .abm-summary h2, .humss-summary h2, .tvl-summary h2, .total-summary h2, .no-summary h2{
+    text-align: center;
+    width: 50%;
+    font-size: 16px;
+}
+
+.summary-container{
+    width: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.summary-bg{
+    background-color: aliceblue;
+    border-radius: 10px;
+    padding: 5px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.summary-bg h2{
+    font-size: 15px;
+    color: black;
+    text-align: center;
+}
+.graph-programs{
+    margin-top: -20px;
+    width: 88%;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    gap: 20px;
+}
+
+.graph-programs h1{
+    font-size: 20px;    
+}
+
+#myChart{
+    width: 1000;
+    overflow: hidden;
+}
+
+#demographicChart{
+    width: 400px; 
+    font-size: 6px;
+}
+
+#program-filter{
+    background-color: #fff;
+    border: 2px solid #523762;
+    font-size: 15px;
+    font-family: 'Poppins';
+    font-weight: 600;
+    color: #523762;
+}
+
+
+@media (max-width: 1300px) {    
+    .graph-demographic h1{
+        font-size: 15px;
+        width: 85%;
+    }
+
+    .stem-summary h2, .abm-summary h2, .humss-summary h2, .tvl-summary h2, .total-summary h2, .no-summary h2{
+        text-align: center;
+        width: 50%;
+        font-size: 12px;
+    }
+
+    .total-summary{
+        width: 80%;
+        border-radius: 20px;
+        background-color: #230b41;
+        height: 4vh;
+        display: flex;  
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .no-summary{
+        width: 80%;
+        border-radius: 20px;
+        background-color: #AE9FCF;
+        height: 4vh;
+        display: flex;  
+        align-items: center;
+        color: white;
+    }
+
+    .stem-summary{
+        width: 80%;
+        border-radius: 20px;
+        background-color: #230b41;
+        height: 4vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .abm-summary{
+        width: 80%;
+        border-radius: 20px;
+        background-color: #523762; 
+        height: 4vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .humss-summary{
+        width: 80%;
+        border-radius: 20px;
+        background-color: #AE9FCF;
+        height: 4vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .tvl-summary{
+        width: 80%;
+        border-radius: 20px;
+        background-color: #ffd4e1;
+        height: 4vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+
+    .summary-bg{
+        background-color: aliceblue;
+        border-radius: 10px;
+        padding: 2px;
+        width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .summary-bg h2{
+        font-size: 12px;
+        color: black;
+        text-align: center;
+    }
+
+    .strand-title h1{
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .graph-user-non-strand h1{
+        font-size: 12px;
+        text-align: center;
+    }
+    
+    .graph-user-total h1{
+        font-size: 12px;
+    }
+
+    #demographicChart{
+        width: 200px; 
+        height: 50px;
+        font-size: 6px;
+    }
+}
+
+
+@media (min-width: 1920px) {
+    .graph-demographic h1{
+        font-size: 20px;
+        width: 85%;
+    }
+
+    .stem-summary h2, .abm-summary h2, .humss-summary h2, .tvl-summary h2, .total-summary h2, .no-summary h2{
+        text-align: center;
+        width: 50%;
+        font-size: 25px;
+    }
+
+    .total-summary{
+        width: 80%;
+        border-radius: 25px;
+        background-color: #230b41;
+        height: 6vh;
+        display: flex;  
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .no-summary{
+        width: 80%;
+        border-radius: 25px;
+        background-color: #AE9FCF;
+        height: 6vh;
+        display: flex;  
+        align-items: center;
+        color: white;
+    }
+
+    .stem-summary{
+        width: 80%;
+        border-radius: 25px;
+        background-color: #230b41;
+        height: 6vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .abm-summary{
+        width: 80%;
+        border-radius: 25px;
+        background-color: #523762; 
+        height: 6vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .humss-summary{
+        width: 80%;
+        border-radius: 25px;
+        background-color: #AE9FCF;
+        height: 6vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .tvl-summary{
+        width: 80%;
+        border-radius: 25px;
+        background-color: #ffd4e1;
+        height: 6vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+
+    .summary-bg{
+        background-color: aliceblue;
+        border-radius: 10px;
+        padding: 2px;
+        width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .summary-bg h2{
+        font-size: 20px;
+        color: black;
+        text-align: center;
+    }
+
+    .strand-title h1{
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .graph-user-non-strand h1{
+        font-size: 20px;
+        text-align: center;
+    }
+    
+    .graph-user-total h1{
+        font-size: 20px;
+    }
+
+    .summary-bg{
+        background-color: aliceblue;
+        border-radius: 15px;
+        padding: 5px;
+        width: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .summary-bg h2{
+        font-size: 20px;
+        color: black;
+        text-align: center;
+    }
+}

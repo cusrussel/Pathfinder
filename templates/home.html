@@ -1,0 +1,156 @@
+{% extends 'navigation.html' %} {% block content %}
+<div class="h-main">
+  <div class="h-content">
+    <div class="h-left-convo">
+      <img class="h-left-picture" src="/static/images/home/convo1st.svg" alt="Conversation" />
+      <img class="h-left-picture" src="/static/images/home/convo1st1.svg" alt="Conversation" />
+    </div>
+
+    <div class="h-middle-picture">
+      <img class="h-middle-picture" src="/static/images/home/picture.svg" alt="Image" />
+    </div>
+    <div class="h-right-convo">
+      <img class="h-right-picture" src="/static/images/home/convo2nd.svg" alt="Conversation" />
+      <img class="h-right-picture" src="/static/images/home/convo2nd1.svg" alt="Conversation" />
+    </div>
+  </div>
+</div>
+
+<div class="h-content-bot">
+  <h1>EXPLORE</h1>
+  <p>different programs to identify the one that best fits your needs</p>
+</div>
+
+<div class="second-section">
+  <div class="htw">
+    <h1>how to use?</h1>
+  </div>
+
+  <div class="htw-desc">
+    <div class="htw-desc-background-1">
+      <h1 class="htw-title">Answer the test</h1>
+      <p class="htw-descriptions">
+        Discover your ideal college program by authentically expressing your
+        academic interests and aspirations through honest responses.
+      </p>
+    </div>
+    <div class="htw-desc-background-2">
+      <h1 class="htw-title">Analyzing Data</h1>
+      <p class="htw-descriptions">
+        We delve into the analysis of data collected, unraveling crucial
+        insights that will significantly contribute to the forthcoming
+        recommendations.
+      </p>
+    </div>
+    <div class="htw-desc-background-3">
+      <h1 class="htw-title">View Result</h1>
+      <p class="htw-descriptions">
+        Discover how the knowledge about your skills and talent can guide you
+        towards college programs that align with your preferences and strengths,
+        influencing various aspects of your academic journey.
+      </p>
+    </div>
+
+    <div class="htw-link">
+      <p>
+        Want to take the test?
+        <a href="{{ url_for('recommender') }}">Click Me</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="third-section">
+  <div class="ts-benefits fade-in-up">
+    <h1>What are the benefits?</h1>
+    <p>
+      Choosing the right college program offers several key benefits for
+      students:
+    </p>
+  </div>
+
+  <div class="ts-container">
+    <div class="ts-card fade-in-up">
+      <img src="/static/images/home/benefits-checked.svg" alt="" class="ts-icon" />
+      <h1>Academic Success</h1>
+      <p>
+        Students are more likely to excel academically when they are engaged in
+        a program that matches their interests and strengths.
+      </p>
+    </div>
+
+    <div class="ts-card fade-in-up">
+      <img src="/static/images/home/benefits-checked.svg" alt="" class="ts-icon" />
+      <h1>Career Alignment</h1>
+      <p>
+        The right program prepares students with the specific skills and
+        knowledge needed for their desired career path, increasing employability
+        after graduation.
+      </p>
+    </div>
+
+    <div class="ts-card fade-in-up">
+      <img src="/static/images/home/benefits-checked.svg" alt="" class="ts-icon" />
+      <h1>Higher Motivation</h1>
+      <p>
+        When students are passionate about their studies, they are more
+        motivated to attend classes, participate in activities, and complete
+        assignments.
+      </p>
+    </div>
+
+    <div class="ts-card fade-in-up">
+      <img src="/static/images/home/benefits-checked.svg" alt="" class="ts-icon" />
+      <h1>Personal Satisfaction</h1>
+      <p>
+        A program that aligns with a student’s goals and values contributes to a
+        greater sense of personal fulfillment and satisfaction.
+      </p>
+    </div>
+
+    <div class="ts-card fade-in-up">
+      <img src="/static/images/home/benefits-checked.svg" alt="" class="ts-icon" />
+      <h1>Networking Opportunities</h1>
+      <p>
+        Choosing a well-suited program often provides access to industry
+        connections, internships, and networking opportunities that can be
+        crucial for future career development.
+      </p>
+    </div>
+
+    <div class="ts-card fade-in-up">
+      <img src="/static/images/home/benefits-checked.svg" alt="" class="ts-icon" />
+      <h1>Long-term Success</h1>
+      <p>
+        A well-chosen program not only sets the foundation for a successful
+        career but also opens doors to lifelong learning and advancement
+        opportunities.
+      </p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-main-nav">
+    <div class="f-title">
+      <h1>Pathfinder</h1>
+      <p>Find Your Perfect College Program</p>
+    </div>
+    <div class="f-nav">
+      <ul class="f-ul">
+        <li class="f-li"><a href="{{ url_for('home') }}">home</a></li>
+        <li class="f-li"><a href="{{ url_for('recommender') }}">recommender</a></li>
+        <li class="f-li"><a href="{{ url_for('analysis') }}">analysis</a></li>
+        <li class="f-li"><a href="{{ url_for('programs') }}">programs</a></li>
+      </ul>
+    </div>
+
+    <div class="f-line"></div>
+
+    <div class="f-copyright">
+      <p>© 2024 Pathfinder, All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <link rel="icon" type="image/x-icon" href="/static/images/navbar/pathfinder-1.svg">
+    <title>Pathfinder</title>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-title">
+        <h1><img src="/static/images/navbar/pathfinder-1.svg" alt=""> Pathfinder</h1>
+      </div>
+      <ul class="nav-ul">
+        <div class="nav-buttons">
+          <li>
+            <div class="button-background active">
+              <img src="/static/images/navbar/home.svg" alt="" />
+              <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+            </div>
+          </li>
+
+          <li>
+            <div class="button-background">
+              <img src="/static/images/navbar/recommender.svg" alt="" />
+              <a href="{{ url_for('recommender')}}" class="nav-link">Recommender</a>
+            </div>
+          </li>
+
+          <li>
+            <div class="button-background">
+              <img src="/static/images/navbar/analytics.svg" alt="" />
+              <a href="{{ url_for('analysis')}}" class="nav-link">Analysis</a>
+            </div>
+          </li>
+
+          <li>
+            <div class="button-background">
+              <img src="/static/images/navbar/programs.svg" alt="" />
+              <a href="{{ url_for('programs')}}" class="nav-link">Programs</a>
+            </div>
+          </li>
+
+        </div>
+      </ul>
+    </nav>
+
+    <div class="content">
+      <div>{% block content %} {% endblock %}</div>
+    </div>
+
+    <script src="/static/js/index.js"></script>
+  </body>
+</html>
