@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template, Response
 import pickle
 import pandas as pd
 import os
+import json
 
 from dotenv import load_dotenv
 
@@ -9,17 +10,28 @@ from datetime import datetime
 from flask_mail import Mail, Message
 
 import firebase_admin
-from firebase_admin import credentials, db
+from firebase_admin import credentials, db, initialize_app
 
 
 load_dotenv()
 
-cred = credentials.Certificate(os.getenv("FIREBASE_CREDENTIALS"))
+firebase_credentials_str = os.environ.get('FIREBASE_CREDENTIALS')
+database_url = os.environ.get('FIREBASE_DATABASE_URL')
+
+# Check if environment variables are set
+if not firebase_credentials_str:
+    raise ValueError("FIREBASE_CREDENTIALS environment variable not set.")
+if not database_url:
+    raise ValueError("FIREBASE_DATABASE_URL environment variable not set.")
+
+# Load credentials from the JSON string
+firebase_credentials = json.loads(firebase_credentials_str)
+
+# Initialize Firebase app with credentials and database URL
+cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred, {
-    'databaseURL': os.getenv("FIREBASE_DATABASE_URL")
+    'databaseURL': database_url
 })
-
-
 app = Flask(__name__)
 
 
