@@ -12,23 +12,25 @@ import firebase_admin
 from firebase_admin import credentials, db
 
 
-cred = credentials.Certificate("pathfinder.json")
+load_dotenv()
+
+cred = credentials.Certificate(os.getenv("FIREBASE_CREDENTIALS"))
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://pathfinder-d8f35-default-rtdb.firebaseio.com/'
+    'databaseURL': os.getenv("FIREBASE_DATABASE_URL")
 })
 
 
 app = Flask(__name__)
 
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # SMTP server
-app.config['MAIL_PORT'] = 587  # Port for TLS
-app.config['MAIL_USE_TLS'] = True  # Enable TLS
-app.config['MAIL_USE_SSL'] = False  # Disable SSL
-app.config['MAIL_USERNAME'] = 'pathfinderdiscoveryacedemy@gmail.com'  # Your email
-app.config['MAIL_PASSWORD'] = 'rjhblnawkjgufdbe'  # Your email password
-app.config['MAIL_DEFAULT_SENDER'] = ('Pathfinder', 'pathfinderdiscoveryacedemy@gmail.com')
-app.config['MAIL_DEBUG'] = True  # Enable debug output
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+app.config['MAIL_DEBUG'] = True  # Set to False in production
 
 mail = Mail(app)
 
