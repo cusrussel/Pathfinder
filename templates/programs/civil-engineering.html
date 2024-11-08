@@ -175,37 +175,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll(".explore-navs button");
     const sections = document.querySelectorAll(".general-introduction");
 
-    // Hide all sections by default
     function hideAllSections() {
         sections.forEach(section => {
             section.style.display = "none";
         });
     }
 
-    // Remove 'active' class from all buttons
     function removeActiveClass() {
         buttons.forEach(button => {
             button.classList.remove("active");
         });
     }
 
-    // Show the section and apply active style to the clicked button
     buttons.forEach(button => {
         button.addEventListener("click", () => {
             const targetId = button.textContent.trim().toLowerCase().replace(" ", "");
 
-            hideAllSections(); // Hide all sections first
-            document.getElementById(targetId).style.display = "block"; // Show the relevant section
+            hideAllSections(); 
+            document.getElementById(targetId).style.display = "block"; 
             
-            removeActiveClass(); // Remove active class from all buttons
-            button.classList.add("active"); // Add active class to clicked button
+            removeActiveClass(); 
+            button.classList.add("active");
         });
     });
 
-    // Optionally display the first section and set first button as active by default
     hideAllSections();
     document.getElementById("overview").style.display = "block";
-    buttons[0].classList.add("active"); // Set first button as active initially
+    buttons[0].classList.add("active"); 
 });
 
 </script>

@@ -6,9 +6,7 @@
 <link rel="stylesheet" href="/static/css/graphs.css" />
 
     <div class = "graph-main">
-        <div class = "graph-container">
-
-        
+        <div class = "graph-container">  
         <div class = "graph-container-one">
             <div class = "graph-user">
                 <div class = "graph-user-total">
@@ -92,53 +90,40 @@
                     <option value="TVL Track">TVL</option>
                     <option value="None">No Strand</option>
                 </select>
-                
-                <!-- <select id="ranking-filter" onchange="filterGraph()">
-                    <option value="1">Output #1</option>
-                    <option value="2">Output #2</option>
-                    <option value="3">Output #3</option>
-                </select> -->
             </div>
             <canvas id="myChart" style = "height: fit-content;" width="1000"></canvas>
         </div>
-
-        
-        
-
-        
-
     </div>
     
     </div>
     <script>
 
-fetch('/api/user_count') // Adjust the endpoint as necessary
+fetch('/api/user_count')
     .then(response => response.json())
     .then(data => {
-        const totalUserCount = data.total_users; // Get the total user count from the response
+        const totalUserCount = data.total_users; 
         console.log('Total User Count:', totalUserCount);
 
-        const element = document.getElementById('totalUserCount'); // Get the element by its ID
+        const element = document.getElementById('totalUserCount'); 
         if (element) {
-            element.innerHTML = totalUserCount;  // Set the total user count as the text content of the element
+            element.innerHTML = totalUserCount; 
         }
     })
     .catch(error => {
         console.error('Error fetching total user count:', error);
     });
 
-        fetch('/api/strand') // Adjust the endpoint as necessary
+        fetch('/api/strand')
             .then(response => response.json())
             .then(data => {
                 const strand = ['STEM', 'ABM', 'HUMSS', 'TVL']
-                // Iterate through the strand data
                 Object.keys(data).forEach(strand => {
                     const userCount = data[strand];
                     console.log('Strand:', strand, 'User Count:', userCount);
 
-                    const element = document.getElementById(strand); // Get the element by strand ID
+                    const element = document.getElementById(strand);
                     if (element) {
-                        element.innerHTML = userCount;  // Set the user count as the text content of the element
+                        element.innerHTML = userCount; 
                     }
                 });
             })
@@ -147,14 +132,12 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
             });
             
 
-        fetch('/api/demographic') // Adjust the endpoint as necessary
+        fetch('/api/demographic')
             .then(response => response.json())
             .then(data => {
-                // Format the data for Chart.js
-                const labels = Object.keys(data);  // Gender labels (e.g., Male, Female)
-                const counts = Object.values(data);  // Corresponding user counts
+                const labels = Object.keys(data);  
+                const counts = Object.values(data); 
 
-                // Chart configuration
                 const config = {
                     type: 'doughnut',
                     data: {
@@ -164,9 +147,9 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
                             
                             data: counts,
                             backgroundColor: [
-                                '#230b41', // Color for first gender
-                                '#AE9FCF',// Color for second gender
-                                '#ffd4e1'   // Color for others if needed
+                                '#230b41',
+                                '#AE9FCF',
+                                '#ffd4e1'
                             ],
                             borderColor: [
                                 '#230b41',
@@ -191,10 +174,10 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
                                 
                             },
                             tooltip: {
-                                enabled: true  // Enable tooltips
+                                enabled: true  
                             },
                             datalabels: {
-                                color: '#FFFFFF',  // Label text color
+                                color: '#FFFFFF', 
                                 formatter: (value) => value,
                                 font: {
                                     weight: 'bold',
@@ -206,10 +189,9 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
                             }
                         }
                     },
-                    plugins: [ChartDataLabels] // Register the datalabels plugin
+                    plugins: [ChartDataLabels]
                 };
 
-                // Render the chart
                 const genderChart = new Chart(
                     document.getElementById('demographicChart'),
                     config
@@ -219,17 +201,14 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
                 console.error('Error fetching demographic data:', error);
             });
 
-        // Fetch data from the API
-        let chart;  // Define a global variable for the chart instance
+        let chart; 
 
-// Fetch data and initialize the chart
 fetch('/api/data')
     .then(response => response.json())
     .then(data => {
-        initializeChart(data, 'STEM');  // Initialize with STEM as default
+        initializeChart(data, 'STEM'); 
     });
 
-// Function to initialize or update the chart with a specified strand
 function initializeChart(data, selectedStrand) {
     const programs = Object.keys(data).filter(program => data[program][selectedStrand]);
     const barColors = ['#230B41'];
@@ -244,12 +223,11 @@ function initializeChart(data, selectedStrand) {
         hoverBorderColor: '#fff',
     }];
 
-    // Create or update the chart
     const ctx = document.getElementById('myChart').getContext('2d');
     if (chart) {
         chart.data.labels = programs;
         chart.data.datasets = datasets;
-        chart.update();  // Update the existing chart
+        chart.update(); 
     } else {
         chart = new Chart(ctx, {
             type: 'bar',
@@ -299,26 +277,14 @@ function initializeChart(data, selectedStrand) {
     }
 }
 
-// Function to update the chart based on selected strand
 function filterGraph() {
     const selectedStrand = document.getElementById('program-filter').value;
     fetch('/api/data')
         .then(response => response.json())
         .then(data => {
-            initializeChart(data, selectedStrand);  // Pass both filters
+            initializeChart(data, selectedStrand); 
         });
 }
-
-
-    // Function to generate random colors for the bars
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
     </script>
 
 {% endblock %}
