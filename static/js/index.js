@@ -1,20 +1,16 @@
-// Functions for Questionnaires
-
-
 function hideContentAgain(){
   document.getElementById('r-result').classList.remove("show");
     document.getElementById('r-content').classList.remove("show");
 
     const secondaryButtons = document.querySelectorAll('#question-17 .r-buttons button');
   secondaryButtons.forEach(button => {
-    button.disabled = false; // Re-enable the button
-    button.style.opacity = 1; // Reset the visual effect
+    button.disabled = false; 
+    button.style.opacity = 1; 
   });
 
     begin();
     resetQuestions();
 }
-
 
 function validateEmail() {
   const emailContainer = document.getElementById('float-email');
@@ -28,20 +24,19 @@ function validateEmail() {
     failedMessage.style.position = "fixed";
     failedMessage.style.top = "120px";
     failedMessage.style.right = "20px";
-    failedMessage.style.backgroundColor = "#f44336"; // Green color for success
+    failedMessage.style.backgroundColor = "#f44336"; 
     failedMessage.style.color = "#fff";
     failedMessage.style.padding = "10px";
     failedMessage.style.borderRadius = "5px";
     failedMessage.style.zIndex = "9999";
     document.body.appendChild(failedMessage);
 
-    // Automatically hide the success message after 3 seconds
     setTimeout(() => {
       failedMessage.style.display = "none";
     }, 3000);
     
     document.getElementById("emailInput").value = "";
-    return false; // Prevent form submission
+    return false; 
   } else {
     emailContainer.style.display = "none";
     emailContainer.classList.add("hidden");
@@ -52,37 +47,34 @@ function validateEmail() {
     successMessage.style.position = "fixed";
     successMessage.style.top = "120px";
     successMessage.style.right = "20px";
-    successMessage.style.backgroundColor = "#4CAF50"; // Green color for success
+    successMessage.style.backgroundColor = "#4CAF50";
     successMessage.style.color = "#fff";
     successMessage.style.padding = "10px";
     successMessage.style.borderRadius = "5px";
     successMessage.style.zIndex = "9999";
     document.body.appendChild(successMessage);
 
-    // Automatically hide the first success message after 4 seconds
     setTimeout(() => {
         successMessage.style.display = "none";
     }, 4000);
 
-    // Second success message: "A copy has been sent to your email."
     setTimeout(() => {
         const success1Message = document.createElement("div");
         success1Message.textContent = "A copy has been sent to your email.";
         success1Message.style.position = "fixed";
         success1Message.style.top = "120px";
         success1Message.style.right = "20px";
-        success1Message.style.backgroundColor = "#4CAF50"; // Green color for success
+        success1Message.style.backgroundColor = "#4CAF50";
         success1Message.style.color = "#fff";
         success1Message.style.padding = "10px";
         success1Message.style.borderRadius = "5px";
         success1Message.style.zIndex = "9999";
         document.body.appendChild(success1Message);
 
-        // Automatically hide the second success message after 2 seconds
         setTimeout(() => {
             success1Message.style.display = "none";
         }, 2000);
-    }, 4000); // Delay the second message by 4 seconds to follow the first one
+    }, 4000); 
 
     return true; // Allow form submission
   }
@@ -93,12 +85,10 @@ function toggleEmail() {
   const emailContainer = document.getElementById('float-email');
   
   if (emailContainer.style.display === "none" || !emailContainer.style.display) {
-    // Show the email container
     emailContainer.style.display = "flex";
     emailContainer.classList.add("show");
     emailContainer.classList.remove("hidden");
   } else {
-    // Hide the email container
     emailContainer.style.display = "none";
     emailContainer.classList.add("hidden");
     emailContainer.classList.remove("show");
@@ -108,25 +98,22 @@ function toggleEmail() {
 function resetQuestions() {
   currentQuestion = 1;
 
-  // Hide all questions
   const allQuestions = document.querySelectorAll('[id^="question-"]');
   allQuestions.forEach((question) => {
       question.classList.add('hidden');
   });
 
-  // Display the first question
   const firstQuestion = document.getElementById('question-1');
   if (firstQuestion) {
       firstQuestion.classList.remove('hidden');
   }
 
-  // Ensure button state is updated
   updateNextButtonState();
 }
 
 function getFirstPathSegment() {
   const pathSegments = window.location.pathname.split("/").filter(Boolean);
-  return pathSegments[0] || null; // Returns the first segment (e.g., "programs") or null if there's none
+  return pathSegments[0] || null; 
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -152,17 +139,14 @@ const links = document.querySelectorAll(".button-background");
 
 // Check the URL path on page load and set the active link based on it
 document.addEventListener("DOMContentLoaded", function () {
-  const currentPath = window.location.pathname; // Get the current path
+  const currentPath = window.location.pathname; 
 
   links.forEach((link) => {
     const anchor = link.querySelector("a");
     if (anchor) {
       const href = anchor.getAttribute("href");
       if (href === currentPath) {
-        // Remove 'active' from all links
         links.forEach((link) => link.classList.remove("active"));
-
-        // Set 'active' on the link that matches the current path
         link.classList.add("active");
       }
     }
@@ -172,7 +156,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // Update the URL path without setting the 'active' link based on clicks
 links.forEach((link) => {
   link.addEventListener("click", function (event) {
-    // Prevent default behavior
     event.preventDefault();
 
     const anchor = this.querySelector("a");
@@ -214,12 +197,12 @@ document.addEventListener("DOMContentLoaded", function () {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
-          observer.unobserve(entry.target); // Stop observing once it's visible
+          observer.unobserve(entry.target); 
         }
       });
     },
     {
-      threshold: 0.1, // Adjust the threshold as needed
+      threshold: 0.1, 
     }
   );
 
@@ -235,18 +218,17 @@ function filterItems() {
 
   items.forEach(item => {
     if (filter === "all") {
-        // Show only the "all" content, hide the rest
         if (item.classList.contains("all")) {
-            item.style.removeProperty("display"); // Remove display: none for "all"
+            item.style.removeProperty("display");
         } else {
-            item.style.display = "none"; // Hide other categories
+            item.style.display = "none"; 
         }
     } else {
-        // Show the selected category, hide "all" content
+
         if (item.classList.contains(filter)) {
-            item.style.removeProperty("display"); // Remove display: none for selected category
+            item.style.removeProperty("display");
         } else {
-            item.style.display = "none"; // Hide other categories
+            item.style.display = "none"; 
         }
     }
 });
@@ -283,8 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("animate");
-        // Optional: Reobserve the element if you want it to animate again on future scrolls
-        observer.unobserve(entry.target); // Stop observing after animation (if you don't want re-trigger)
+        observer.unobserve(entry.target); 
       }
     });
   };
@@ -378,7 +359,7 @@ function nextQuestion(event, questionNumber){
       secondaryButtons.forEach(button => {
         if (button.getAttribute('data-value') === value) {
           button.disabled = true;
-          button.style.opacity = 0.5; // optional visual effect
+          button.style.opacity = 0.5; 
         }
       });
     }
@@ -404,11 +385,10 @@ function nextQuestion(event, questionNumber){
 
 const secondaryButtons = document.querySelectorAll('#question-17 .r-buttons button');
 
-// Function to reset the button states
 function resetButtons() {
   secondaryButtons.forEach(button => {
-    button.disabled = false; // Enable the button
-    button.style.opacity = 1; // Restore opacity
+    button.disabled = false; 
+    button.style.opacity = 1; 
   });
 }
 
@@ -417,17 +397,15 @@ async function submitForm() {
   
   let personality = '';
 
-    // Loop through formData and combine the stage values
     for (let [key, value] of Object.entries(formData)) {
         if (key.includes('state')) {
-          personality += String(value); // Concatenate the values for stages
+          personality += String(value); 
         }
     }
 
     formData['personality'] = personality;
 
   try {
-      // First request to /predict
       const response = await fetch('/predict', {
           method: 'POST',
           headers: {
@@ -440,7 +418,6 @@ async function submitForm() {
           const result = await response.json();
           displayPrediction(result);
 
-          // Second request to /submit
           const submitResponse = await fetch('/submit', {
               method: 'POST',
               headers: {
@@ -685,7 +662,6 @@ function displayPrediction(result) {
           predictionImageTwoElement.style.display = 'none';
         }
       } else {
-        // Default for unknown predictions
         predictionInfoElement.innerText = "No additional information available.";
         predictionImageOneElement.style.display = 'none';
         predictionImageTwoElement.style.display = 'none';
@@ -713,11 +689,9 @@ function displayPrediction(result) {
       predictionTopTwo.innerText = predictionsMap[secondPrediction]?.text;
       predictionTopThree.innerText = predictionsMap[thirdPrediction]?.text;
   
-      // Display the first prediction's details by default
       updateProgramDetails(topPrediction);
       handleActiveClass(predictionTextElement);
 
-      // Add click events to update info and manage active class
       predictionTopTwo.onclick = () => {
         updateProgramDetails(secondPrediction);
         handleActiveClass(predictionTopTwo); 
@@ -763,6 +737,10 @@ window.addEventListener('resize', disableLinksOnResize);
 
 function hideContent(){ 
   document.getElementById('r-begin').classList.add('show');
+}
+
+function cancel(){
+  document.getElementById('r-begin').classList.remove("show");
 }
 
 function begin(){

@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     user-select: none;
-
 }
 
 .program-infos{
@@ -44,8 +43,8 @@
 
 .item{
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 3 columns with equal width */
-    gap: 60px; /* spacing between the grid items */
+    grid-template-columns: repeat(6, 1fr);
+    gap: 60px; 
     max-width: 2000px;
     margin: 0 auto;
     padding: 10px;
@@ -56,7 +55,7 @@
 
 .program-card-container::-webkit-scrollbar {
     width: 0;
-    height: 0; /* For horizontal scrollbar */
+    height: 0;
 }
 
 .program-cards{
