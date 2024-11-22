@@ -48,9 +48,9 @@
     max-width: 2000px;
     margin: 0 auto;
     padding: 10px;
-    height: 60vh;
+    /* height: 60vh;
     overflow: auto;
-    overflow-x: hidden;
+    overflow-x: hidden; */
 }
 
 .program-card-container::-webkit-scrollbar {

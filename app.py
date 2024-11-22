@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, Response
+from flask import Flask, request, jsonify, render_template, Response,  redirect, url_for
 import pickle
 import pandas as pd
 import os
@@ -45,6 +45,11 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_DEBUG'] = True  # Set to False in production
 
 mail = Mail(app)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # Redirect to the home page
+    return redirect(url_for('home'))
 
 def load_model():
     model_path = "decision_tree_model.pkl"
