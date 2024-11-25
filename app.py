@@ -41,7 +41,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app = Flask(__name__)
 
-
+app.secret_key = os.environ.get('APP_SECRET_KEY')
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
 app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
