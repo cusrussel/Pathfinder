@@ -1,0 +1,155 @@
+{% extends 'navigation.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="/static/program-info.css">
+
+<div class="program-main">
+    <div class="program-container">
+        <div class="program-panel">
+            <div class="panel-info-container">
+                <div class="panel-info">
+                    <h2>{{ program['degree'] }}</h2>
+                    <h1>{{ program['name'] }}</h1> <!-- Display name -->
+                    <p>{{ program['miniDescription'] }}</p> <!-- Display overview -->
+                    <div class="panel-skills">
+                        {% for skill in program['skills'] %} <!-- Loop through skills (list) -->
+                        <p>{{ skill }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <img src="{{ program['image_url'] }}" alt="Program Image"> <!-- Display image -->
+        </div>
+
+        <div class="program-explore-container">
+            <div class="explore-navs">
+                <h1>Explore This Program</h1>
+                <div class="explore-line"></div>
+                <button>Overview <img src="/static/images/programs/explore-arrow.svg" alt=""></button>
+                <div class="explore-line"></div>
+                <button>Benefits <img src="/static/images/programs/explore-arrow.svg" alt=""></button>
+                <div class="explore-line"></div>
+                <button>Career Paths <img src="/static/images/programs/explore-arrow.svg" alt=""></button>
+                <div class="explore-line"></div>
+                <button>Conclusion <img src="/static/images/programs/explore-arrow.svg" alt=""></button>
+                <div class="explore-line"></div>
+            </div>
+
+            <div class="explore-general">
+                <div id="overview" class="general-introduction">
+                    <h1>Overview</h1>
+                    <div class="explore-line"></div>
+                    <br>
+                    <p><b>{{program['degree']}} in {{ program['name'] }}</b> {{ program['overview'] }}</p> <!-- Display overview -->
+                </div>
+
+                <div id="benefits" class="general-introduction">
+                    <h1>Benefits</h1>
+                    <div class="explore-line"></div>
+                    <br>
+                    <p>Pursuing <b>{{program['degree']}} in {{ program['name'] }}</b> offers several benefits:</p>
+                    <ul>
+                        {% for benefit in program['benefits'] %} <!-- Loop through benefits (list) -->
+                            <li>
+                                {% if ':' in benefit %}
+                                    <b>{{ benefit.split(':')[0] }}:</b>{{ benefit.split(':')[1] }}{% if benefit.endswith('.') %}<br><br>{% endif %}
+                                {% else %}
+                                    {{ benefit }}{% if benefit.endswith('.') %}<br><br>{% endif %}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div id="careerpaths" class="general-introduction">
+                    <h1>Career Paths</h1>
+                    <div class="explore-line"></div>
+                    <br>
+                    <p>Graduates with a <b>{{program['degree']}} in {{ program['name'] }}</b> can pursue various roles, including but not limited to: </p>
+                    <ul>
+                        {% for career_path in program['career_paths'] %} <!-- Loop through career paths (list) -->
+                            <li>
+                                {% if ':' in career_path %}
+                                    <b>{{ career_path.split(':')[0] }}:</b>{{ career_path.split(':')[1] }}{% if career_path.endswith('.') %}<br><br>{% endif %}
+                                {% else %}
+                                    {{ career_path }}{% if career_path.endswith('.') %}<br><br>{% endif %}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div id="conclusion" class="general-introduction">
+                    <h1>Conclusion</h1>
+                    <div class="explore-line"></div>
+                    <br>
+                    <p>The <b>{{program['degree']}} in {{ program['name'] }}</b> {{ program['conclusion'] }}</p> <!-- Use `.get()` for optional fields -->
+                </div>
+            </div>
+
+            <div class="explore-day">
+                <div class="day-container">
+                    <img src="/static/images/programs/strength.svg" alt="">
+                    <h2>Strengths</h2>
+                    <ol>
+                        {% for strength in program['strengths'] %} <!-- Loop through strengths (list) -->
+                        <li>{{ strength }}</li>
+                        {% endfor %}
+                    </ol>
+                    <br>
+                    <img src="/static/images/programs/weakness.svg" alt="">
+                    <h2>Weaknesses</h2>
+                    <ol>
+                        {% for weakness in program['weaknesses'] %} <!-- Loop through weaknesses (list) -->
+                        <li>{{ weakness }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll(".explore-navs button");
+        const sections = document.querySelectorAll(".general-introduction");
+    
+        function hideAllSections() {
+            sections.forEach(section => {
+                section.style.display = "none"; // Hide all sections
+            });
+        }
+    
+        function removeActiveClass() {
+            buttons.forEach(button => {
+                button.classList.remove("active"); // Remove active class from all buttons
+            });
+        }
+    
+        buttons.forEach(button => {
+            button.addEventListener("click", () => {
+                const targetId = button.textContent.trim().toLowerCase().replace(" ", "");
+                hideAllSections(); 
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.style.display = "block"; // Show the clicked section
+                }
+                removeActiveClass(); 
+                button.classList.add("active"); // Add active class to clicked button
+            });
+        });
+    
+        // Initialize with the first section visible
+        hideAllSections();
+        const firstSection = document.getElementById("overview");
+        if (firstSection) {
+            firstSection.style.display = "block";
+        }
+        if (buttons[0]) {
+            buttons[0].classList.add("active");
+        }
+    });
+</script>
+
+{% endblock %}

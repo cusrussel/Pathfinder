@@ -1,0 +1,292 @@
+{% extends '/admin/sidebar.html' %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/sidebar.css">
+
+<div class="q-container">
+    <h1>List of Programs</h1>
+    <div class="q-content-container">
+        <!-- Table to display programs -->
+        <table id="programs-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Program Name</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for program in programs %}
+                    <tr id="program-{{ program['program_id'] }}">
+                        <td>
+                            <a href="{{ url_for('program_details', program_name=program['name']) }}" target="_blank">
+                                <h2 class = "program-name">{{ program['name'] }}</h2>
+                            </a>
+                        </td>
+                        <td>
+                            <img src="{{ url_for('static', filename=program['image_url']) }}" alt="{{ program['name'] }} logo" style="width: 100px;">
+                        </td>
+                        <td>
+
+                            <button class="edit-button" onclick="editProgram('{{ program['program_id'] }}')">Edit</button>
+                            <button class="delete-button" onclick="deleteProgram('{{ program['program_id'] }}')">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Form for adding/editing a program
+    <div id="program-form" style="display:none;" enctype="multipart/form-data">
+        <h2 id="form-title">Add Program</h2>
+        <label for="program-name">Program Name:</label>
+        <input type="text" id="program-name" required><br>
+
+        <label for="program-categories">Categories (comma separated):</label>
+        <input type="text" id="program-categories" required><br>
+
+        <label for="program-image">Image:</label>
+        <input type="file" id="program-image" required><br>
+
+        <button onclick="saveProgram()">Save</button>
+        <button onclick="closeForm()">Cancel</button>
+    </div> -->
+
+    <div id="overlay"></div>
+
+    <div id="program-form" style="display:none;" enctype="multipart/form-data">
+
+        <div class = "program-information">
+            <h2 id="form-title"></h2>
+            <div>
+                <button class = "save-button"onclick="saveProgram()">Save</button>
+                <button class = "close-button" onclick="closeForm()">X</button>
+            </div>
+        </div>
+
+        <div class = "program-direction">
+            <p id = "direction">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam itaque vitae perspiciatis commodi praesentium quibusdam ea quam ad, eos fuga, nihil sint impedit consequatur! Consequuntur dolore hic unde sint ratione!</p>
+        </div>
+
+        <div class = "first-information">
+            <div class = "first-degree">
+                <label for="program-name">Degree: </label>
+                <input type="text" id="program-degree" required><br>
+            </div>
+
+            <div class = "first-program">
+                <label for="program-name">Program Name:</label>
+                <input type="text" id="program-Name" required><br>
+            </div>
+        </div>
+
+        <div class = "second-information">
+            <div class = "second-description">
+                <label for="program-name">Description: </label>
+                <textarea id="program-miniDescription" required></textarea><br>
+            </div>
+
+            <div class = "second-overview">
+                <label for="program-overview">Program Overview:</label>
+                <textarea id="program-overview" required></textarea><br>
+            </div>
+        </div> 
+
+        <div class = "third-information">
+            <div class = "third-categories">
+                <label for="program-categories">Categories (comma separated):</label>
+                <input type="text" id="program-categories" required></input><br>
+            </div>
+
+            <div class = "third-skills">
+                <label for="program-categories">Skills (comma separated):</label>
+                <input type="text" id="program-Skills" required></input><br>
+            </div>
+        </div>
+
+        <div class = "fourth-information">
+            <div class = "fourth-strengths">
+                <label for="program-categories">Strengths (comma separated):</label>
+                <textarea id="program-Strengths" required></textarea><br>
+            </div>
+
+            <div class = "fourth-weaknesses">
+                <label for="program-categories">Weaknesses (comma separated):</label>
+                <textarea id="program-Weaknesses" required></textarea><br>
+            </div>
+        </div>
+
+        <div class = "fifth-information">
+            <div class = "fifth-benefits">
+                <label for="program-categories">Benefits(comma separated):</label>
+                <textarea id="program-Benefits" required></textarea><br>
+            </div>
+
+            <div class = "fifth-career-paths">
+                <label for="program-categories">Career Paths(comma separated):</label>
+                <textarea id="program-Career_Paths" required></textarea><br>
+            </div>
+        </div>
+
+
+        <div class = "six-information">
+            <div class="six-conclusion">
+                <label for="program-categories">Conclusion:</label>
+                <textarea id="program-Conclusion" required></textarea><br>
+            </div>
+
+            <div class = "six-image">
+                <label for="program-image">Image:</label>
+                <input type="file" id="program-image" required><br>
+            </div>  
+        </div>
+    </div>
+
+    
+    <button class="add-button" onclick="addProgram()">Add Program</button>
+</div>
+
+<script>
+    document.getElementById('program-form').style.display = 'none';
+
+    // Show the form for adding a program
+    function addProgram() {
+        document.getElementById('program-form').style.display = 'block';
+        document.getElementById('form-title').innerText = 'New Program Informations';
+        document.getElementById('direction').innerText = 'Please fill out all fields in the form, including program details, skills, strengths, weaknesses, benefits, career paths, and a conclusion, to create a new program.';
+        document.getElementById('program-Name').value = '';
+        document.getElementById('program-degree').value = '';
+        document.getElementById('program-miniDescription').value = '';
+        document.getElementById('program-overview').value = '';
+        document.getElementById('program-categories').value = '';
+        document.getElementById('program-Skills').value = '';
+        document.getElementById('program-Strengths').value = '';
+        document.getElementById('program-Weaknesses').value = '';
+        document.getElementById('program-Benefits').value = '';
+        document.getElementById('program-Career_Paths').value = '';
+        document.getElementById('program-Conclusion').value = '';
+
+        document.getElementById('program-Name').placeholder = "Enter the official program name.";
+            document.getElementById('program-degree').placeholder = "E.g., Bachelor's, Master's.";
+            document.getElementById('program-miniDescription').placeholder = "Write a brief overview (max 100 words).";
+            document.getElementById('program-overview').placeholder = "Provide a detailed program overview.";
+            document.getElementById('program-categories').placeholder = "Separate categories by commas.";
+            document.getElementById('program-Skills').placeholder = "List key skills, separated by commas.";
+            document.getElementById('program-Strengths').placeholder = "List program strengths.";
+            document.getElementById('program-Weaknesses').placeholder = "List program weaknesses.";
+            document.getElementById('program-Benefits').placeholder = "List benefits, separated by commas or periods.";
+            document.getElementById('program-Career_Paths').placeholder = "List career paths, separated by commas or periods.";
+            document.getElementById('program-Conclusion').placeholder = "Write a brief conclusion.";
+
+
+        document.getElementById('program-image').value = ''; // Do not pre-fill the file input for edit
+        delete document.getElementById('question-form').dataset.programId
+    }
+
+    // Show the form for editing a program
+    function editProgram(programId) {
+        fetch(`/get_program/${programId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('program-form').style.display = 'block';
+                document.getElementById('form-title').innerText = 'Modify Program Informations';
+                document.getElementById('direction').innerText = 'Please fill out all fields in the form, including program details, skills, strengths, weaknesses, benefits, career paths, and a conclusion, to create a new program.';
+                document.getElementById('program-Name').value = data.name;
+                document.getElementById('program-degree').value = data.degree;
+                document.getElementById('program-miniDescription').value = data.miniDescription;
+                document.getElementById('program-overview').value = data.overview;
+                document.getElementById('program-categories').value = data.categories.join(',');
+                document.getElementById('program-Skills').value = data.skills.join(',');
+                document.getElementById('program-Strengths').value = data.strengths.join(',');
+                document.getElementById('program-Weaknesses').value = data.weaknesses.join(',');
+                document.getElementById('program-Benefits').value = data.benefits.join(',');
+                document.getElementById('program-Career_Paths').value = data.career_paths.join(',');
+                document.getElementById('program-Conclusion').value = data.conclusion;
+                document.getElementById('program-image').value = ''; // Do not pre-fill the file input for edit
+
+                // Store the program ID for later use
+                document.getElementById('program-form').dataset.programId = programId;
+            });
+    }
+
+    // Save the program (add or edit)
+    function saveProgram() {
+        const programId = document.getElementById('program-form').dataset.programId;
+        const programName = document.getElementById('program-Name').value;
+        const degree = document.getElementById('program-degree').value;
+        const miniDescription = document.getElementById('program-miniDescription').value;
+        const overview = document.getElementById('program-overview').value;
+        const skills = document.getElementById('program-Skills').value.split(',').map(category => category.trim());
+        const strengths = document.getElementById('program-Strengths').value.split(',').map(category => category.trim());
+        const weaknesses = document.getElementById('program-Weaknesses').value.split(',').map(category => category.trim());
+        const categories = document.getElementById('program-categories').value.split(',').map(category => category.trim());
+        const benefits = document.getElementById('program-Benefits').value.split('.,').map(category => category.trim());
+        const career_paths = document.getElementById('program-Career_Paths').value.split('.,').map(category => category.trim());
+        const conclusion = document.getElementById('program-Conclusion').value;
+        const imageFile = document.getElementById('program-image').files[0]; 
+
+    // Create a new FormData object and append the values
+    const formData = new FormData();
+    formData.append('name', programName);
+    formData.append('degree', degree);
+    formData.append('miniDescription', miniDescription);
+    formData.append('overview', overview);
+    formData.append('categories', JSON.stringify(categories)); // Send as JSON string
+    formData.append('skills', JSON.stringify(skills))
+    formData.append('strengths', JSON.stringify(strengths))
+    formData.append('weaknesses', JSON.stringify(weaknesses))
+    formData.append('benefits', JSON.stringify(benefits))
+    formData.append('career_paths', JSON.stringify(career_paths))
+    formData.append('conclusion', JSON.stringify(conclusion))
+    formData.append('image', imageFile); // The selected file
+
+    // Set the URL and method depending on whether we're adding or updating
+    const url = programId ? `/update_program/${programId}` : '/add_program';
+    const method = programId ? 'PUT' : 'POST';
+
+    // Make the fetch request to the server
+    fetch(url, {
+        method: method,
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload(); // Reload the page after successful operation
+        closeForm(); // Close the form
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while saving the program.');
+    });
+}
+
+
+    // Delete a program
+function deleteProgram(programId) {
+    const confirmed = confirm("Are you sure you want to delete this program?");
+    if (confirmed) {
+        fetch(`/delete_program/${programId}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                // Check for success messages
+                if (data.message && (data.message.includes("Program deleted successfully") || data.message.includes("Program deleted and reindexed successfully") || data.message.includes("Program deleted and database is now empty."))) {
+                    alert("Program deleted successfully");
+                    location.reload();
+                } else {
+                    alert(data.error || "Failed to delete the program.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while deleting the program.");
+            });
+    }
+}
+
+    function closeForm() {
+        document.getElementById('program-form').style.display = 'none';
+    }
+</script>
+
+{% endblock %}

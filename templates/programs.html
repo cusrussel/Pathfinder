@@ -1,6 +1,6 @@
 {% extends 'navigation.html' %} {% block content %}
 
-<link rel="stylesheet" href="/static/css/programs.css">
+<link rel="stylesheet" href="/static/programs.css">
 
 <div class = "program-container">
     <div class = "program-infos">
@@ -17,372 +17,394 @@
         </div>
     </div>
 
-    <div class = "program-card-container" id = "program-items">
+    <div class="program-card-container" id="program-items">
+        <div class = "grid-container">
+            {% for program in programs %}
+    <div class="item {% if program['category'] %}
+                    {% for category in program['category'] %}
+                        {{ category }}
+                    {% endfor %}
+                    {% endif %}">
+        <a href="{{ url_for('program_details', program_name=program['name']) }}" target="_blank">
+            <div class="program-cards">
+                <img src="{{ program['image_url'] }}" alt="{{ program['name'] }} logo">
+                <h1>{{ program['name'] }}</h1>
+            </div>
+        </a>
+        
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+    <!-- <div class = "program-card-container" id = "program-items">
         <div class="item all">
-            <a href="{{ url_for('accountancy') }}" target ="_blank">
+            <a href="{{ url_for('program_details', program_name='accountancy') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/accountancy-logo.svg" alt="">
+                    <img src="../static/recommender/programs/accountancy-logo.svg" alt="">
                     <h1>ACCOUNTANCY</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('architecture') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/archi-logo.svg" alt="">
+                    <img src="../static/recommender/programs/archi-logo.svg" alt="">
                     <h1>ARCHITECTURE</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('businessadministration') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/businessadd-logo.svg" alt="">
+                    <img src="../static/recommender/programs/businessadd-logo.svg" alt="">
                     <h1>BUSINESS ADMINISTRATION</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('businessmanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/business-logo.svg" alt="">
+                    <img src="../static/recommender/programs/business-logo.svg" alt="">
                     <h1>BUSINESS <br> MANAGEMENT</h1>
                 </div>
             </a>
             
-            <a href="{{ url_for('civilengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/civileng-logo.svg" alt="">
+                    <img src="../static/recommender/programs/civileng-logo.svg" alt="">
                     <h1>CIVIL ENGINEERING</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('communication') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/communication-logo.svg" alt="">
+                    <img src="../static/recommender/programs/communication-logo.svg" alt="">
                     <h1>COMMUNICATION</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('computerengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/compeng-logo.svg" alt="">
+                    <img src="../static/recommender/programs/compeng-logo.svg" alt="">
                     <h1>COMPUTER <br>ENGINEERING</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('computerscience') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/comsi-logo.svg" alt="">
+                    <img src="../static/recommender/programs/comsi-logo.svg" alt="">
                     <h1>COMPUTER SCIENCE</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('criminology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/crim-logo.svg" alt="">
+                    <img src="../static/recommender/programs/crim-logo.svg" alt="">
                     <h1>CRIMINOLOGY</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('culinaryarts') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/culinary-logo.svg" alt="">
+                    <img src="../static/recommender/programs/culinary-logo.svg" alt="">
                     <h1>CULINARY ARTS</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('education') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/education-logo.svg" alt="">
+                    <img src="../static/recommender/programs/education-logo.svg" alt="">
                     <h1>EDUCATION</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('electronicengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/elecengineering-logo.svg" alt="">
+                    <img src="../static/recommender/programs/elecengineering-logo.svg" alt="">
                     <h1>ELECTRONIC ENGINEERING</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('entrepreneurship') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/entrep-logo.svg" alt="">
+                    <img src="../static/recommender/programs/entrep-logo.svg" alt="">
                     <h1>ENTREPRENEUR</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('hospitalitymanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/hotelmanagement-logo.svg" alt="">
+                    <img src="../static/recommender/programs/hotelmanagement-logo.svg" alt="">
                     <h1>HOSPITALITY MANAGEMENT</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('informationtechnology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/it-logo.svg" alt="">
+                    <img src="../static/recommender/programs/it-logo.svg" alt="">
                     <h1>INFORMATION TECHNOLOGY</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('mathematics') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/math-logo.svg" alt="">
+                    <img src="../static/recommender/programs/math-logo.svg" alt="">
                     <h1>MATHEMATICS</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('mechanicalengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/mechanical-logo.svg" alt="">
+                    <img src="../static/recommender/programs/mechanical-logo.svg" alt="">
                     <h1>MECHANICAL ENGINEERING</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('multimediaarts') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/multimedia-logo.svg" alt="">
+                    <img src="../static/recommender/programs/multimedia-logo.svg" alt="">
                     <h1>MULTIMEDIA ARTS</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('nursing') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/nursing-logo.svg" alt="">
+                    <img src="../static/recommender/programs/nursing-logo.svg" alt="">
                     <h1>NURSING</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('politicalscience') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/polsci-logo.svg" alt="">
+                    <img src="../static/recommender/programs/polsci-logo.svg" alt="">
                     <h1>POLITICAL SCIENCE</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('psychology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/psycho-logo.svg" alt="">
+                    <img src="../static/recommender/programs/psycho-logo.svg" alt="">
                     <h1>PSYCHOLOGY</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('publicadministration') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/public-logo.svg" alt="">
+                    <img src="../static/recommender/programs/public-logo.svg" alt="">
                     <h1>PUBLIC <br> ADMINISTRATION</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('sociology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/socio-logo.svg" alt="">
+                    <img src="../static/recommender/programs/socio-logo.svg" alt="">
                     <h1>SOCIOLOGY</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('statistics') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/stats-logo.svg" alt="">
+                    <img src="../static/recommender/programs/stats-logo.svg" alt="">
                     <h1>STATISTICS</h1>
                 </div>
             </a>
     
-            <a href="{{ url_for('tourismmanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/tourism-logo.svg" alt="">
+                    <img src="../static/recommender/programs/tourism-logo.svg" alt="">
                     <h1>TOURISM <br> MANAGEMENT</h1>
                 </div>
             </a>
         </div>
         <div class="item stem" style="display: none;">
-            <a href="{{ url_for('accountancy') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/accountancy-logo.svg" alt="">
+                    <img src="../static/recommender/programs/accountancy-logo.svg" alt="">
                     <h1>ACCOUNTANCY</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('architecture') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/archi-logo.svg" alt="">
+                    <img src="../static/recommender/programs/archi-logo.svg" alt="">
                     <h1>ARCHITECTURE</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('civilengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/civileng-logo.svg" alt="">
+                    <img src="../static/recommender/programs/civileng-logo.svg" alt="">
                     <h1>CIVIL ENGINEERING</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('computerengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/compeng-logo.svg" alt="">
+                    <img src="../static/recommender/programs/compeng-logo.svg" alt="">
                     <h1>COMPUTER <br>ENGINEERING</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('electronicengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/elecengineering-logo.svg" alt="">
+                    <img src="../static/recommender/programs/elecengineering-logo.svg" alt="">
                     <h1>ELECTRONIC ENGINEERING</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('education') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/education-logo.svg" alt="">
+                    <img src="../static/recommender/programs/education-logo.svg" alt="">
                     <h1>EDUCATION</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('informationtechnology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/it-logo.svg" alt="">
+                    <img src="../static/recommender/programs/it-logo.svg" alt="">
                     <h1>INFORMATION TECHNOLOGY</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('mathematics') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/math-logo.svg" alt="">
+                    <img src="../static/recommender/programs/math-logo.svg" alt="">
                     <h1>MATHEMATICS</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('mechanicalengineering') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/mechanical-logo.svg" alt="">
+                    <img src="../static/recommender/programs/mechanical-logo.svg" alt="">
                     <h1>MECHANICAL ENGINEERING</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('psychology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/psycho-logo.svg" alt="">
+                    <img src="../static/recommender/programs/psycho-logo.svg" alt="">
                     <h1>PSYCHOLOGY</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('nursing') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/nursing-logo.svg" alt="">
+                    <img src="../static/recommender/programs/nursing-logo.svg" alt="">
                     <h1>NURSING</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('statistics') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/stats-logo.svg" alt="">
+                    <img src="../static/recommender/programs/stats-logo.svg" alt="">
                     <h1>STATISTICS</h1>
                 </div>
             </a>
 
         </div>
         <div class="item abm" style="display: none;">
-            <a href="{{ url_for('accountancy') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/accountancy-logo.svg" alt="">
+                    <img src="../static/recommender/programs/accountancy-logo.svg" alt="">
                     <h1>ACCOUNTANCY</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('businessadministration') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/businessadd-logo.svg" alt="">
+                    <img src="../static/recommender/programs/businessadd-logo.svg" alt="">
                     <h1>BUSINESS ADMINISTRATION</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('businessmanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/business-logo.svg" alt="">
+                    <img src="../static/recommender/programs/business-logo.svg" alt="">
                     <h1>BUSINESS <br> MANAGEMENT</h1>
                 </div>
             </a>
             
-            <a href="{{ url_for('entrepreneurship') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/entrep-logo.svg" alt="">
+                    <img src="../static/recommender/programs/entrep-logo.svg" alt="">
                     <h1>ENTREPRENEUR</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('education') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/education-logo.svg" alt="">
+                    <img src="../static/recommender/programs/education-logo.svg" alt="">
                     <h1>EDUCATION</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('hospitalitymanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/hotelmanagement-logo.svg" alt="">
+                    <img src="../static/recommender/programs/hotelmanagement-logo.svg" alt="">
                     <h1>HOSPITALITY MANAGEMENT</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('publicadministration') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/public-logo.svg" alt="">
+                    <img src="../static/recommender/programs/public-logo.svg" alt="">
                     <h1>PUBLIC <br> ADMINISTRATION</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('tourismmanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/tourism-logo.svg" alt="">
+                    <img src="../static/recommender/programs/tourism-logo.svg" alt="">
                     <h1>TOURISM <br> MANAGEMENT</h1>
                 </div>
             </a>
         </div>
         <div class="item humss" style="display: none;">
-            <a href="{{ url_for('criminology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/crim-logo.svg" alt="">
+                    <img src="../static/recommender/programs/crim-logo.svg" alt="">
                     <h1>CRIMINOLOGY</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('communication') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/communication-logo.svg" alt="">
+                    <img src="../static/recommender/programs/communication-logo.svg" alt="">
                     <h1>COMMUNICATION</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('education') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/education-logo.svg" alt="">
+                    <img src="../static/recommender/programs/education-logo.svg" alt="">
                     <h1>EDUCATION</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('multimediaarts') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/multimedia-logo.svg" alt="">
+                    <img src="../static/recommender/programs/multimedia-logo.svg" alt="">
                     <h1>MULTIMEDIA ARTS</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('psychology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/psycho-logo.svg" alt="">
+                    <img src="../static/recommender/programs/psycho-logo.svg" alt="">
                     <h1>PSYCHOLOGY</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('politicalscience') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/polsci-logo.svg" alt="">
+                    <img src="../static/recommender/programs/polsci-logo.svg" alt="">
                     <h1>POLITICAL SCIENCE</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('sociology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/socio-logo.svg" alt="">
+                    <img src="../static/recommender/programs/socio-logo.svg" alt="">
                     <h1>SOCIOLOGY</h1>
                 </div>
             </a>
@@ -390,42 +412,42 @@
             
         </div>
         <div class="item tvl" style="display: none;">
-            <a href="{{ url_for('culinaryarts') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/culinary-logo.svg" alt="">
+                    <img src="../static/recommender/programs/culinary-logo.svg" alt="">
                     <h1>CULINARY ARTS</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('computerscience') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/comsi-logo.svg" alt="">
+                    <img src="../static/recommender/programs/comsi-logo.svg" alt="">
                     <h1>COMPUTER SCIENCE</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('informationtechnology') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/it-logo.svg" alt="">
+                    <img src="../static/recommender/programs/it-logo.svg" alt="">
                     <h1>INFORMATION TECHNOLOGY</h1>
                 </div>
             </a>
 
-            <a href="{{ url_for('hospitalitymanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/hotelmanagement-logo.svg" alt="">
+                    <img src="../static/recommender/programs/hotelmanagement-logo.svg" alt="">
                     <h1>HOSPITALITY MANAGEMENT</h1>
                 </div>
             </a>
             
-            <a href="{{ url_for('tourismmanagement') }}" target ="_blank">
+            <a href="{{ url_for('comsci') }}" target ="_blank">
                 <div class = "program-cards">
-                    <img src="../static/images/recommender/programs/tourism-logo.svg" alt="">
+                    <img src="../static/recommender/programs/tourism-logo.svg" alt="">
                     <h1>TOURISM <br> MANAGEMENT</h1>
                 </div>
             </a>
         </div>
-        
+         -->
 
     </div>
 </div>

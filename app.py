@@ -239,10 +239,253 @@ def recommender():
 def analysis():
     return render_template('analytics.html')
 
+def get_programs():
+    ref = db.reference('programs')  # Assuming your programs are stored under the 'programs' node
+    programs = ref.get()  # Retrieve all the programs from the database
+    return programs
+
 @app.route('/programs')
 def programs():
-    return render_template('programs.html')
+    ref = db.reference('programs')  # Reference the 'programs' node in Firebase Realtime Database
+    programs = ref.get()  # This will return a list of programs
+    
+    # If the structure is a dictionary, loop through it and format it into a list
+    program_list = [{"program_id": idx, "name": program['name'], "category": program['categories'], "image_url": program['image_url']} 
+                    for idx, program in enumerate(programs)]
+    return render_template('programs.html',  programs=program_list)
 
+@app.route('/programs/<program_name>')
+def program_details(program_name):
+    # Reference to the 'programs' node in Firebase
+    programs_ref = db.reference('programs')
+    
+    # Fetch all programs
+    programs = programs_ref.get()
+    
+    if not programs:
+        return "No programs found in the database", 404
+    
+    # Find the matching program by name
+    matched_program = None
+    if isinstance(programs, list):  # If programs is a list
+        for program in programs:
+            # Check if the 'name' field matches the program_name
+            if 'name' in program and program['name'].lower() == program_name.lower():
+                matched_program = program
+                break
+    elif isinstance(programs, dict):  # If programs is a dictionary
+        for key, program in programs.items():
+            # Check if the 'name' field matches the program_name
+            if 'name' in program and program['name'].lower() == program_name.lower():
+                matched_program = program
+                break
+    
+    if not matched_program:
+        return "Program not found", 404  # Return an error if no matching program is found
+    
+    # Extract the required details from the matched program
+    program_details = {
+        "name": matched_program['name'] if 'name' in matched_program else 'N/A',
+        "degree": matched_program['degree'] if 'degree' in matched_program else 'N/A',
+        "miniDescription": matched_program['miniDescription'] if 'miniDescription' in matched_program else 'N/A',
+        "overview": matched_program['overview'] if 'overview' in matched_program else 'N/A',
+        "skills": matched_program['skills'] if 'skills' in matched_program else [],
+        "strengths": matched_program['strengths'] if 'strengths' in matched_program else [],
+        "weaknesses": matched_program['weaknesses'] if 'weaknesses' in matched_program else [],
+        "benefits": matched_program['benefits'] if 'benefits' in matched_program else [],
+        "career_paths": matched_program['career_paths'] if 'career_paths' in matched_program else [],
+        "conclusion": matched_program['conclusion'] if 'conclusion' in matched_program else [],
+        "image_url": matched_program['image_url'] if 'image_url' in matched_program else 'N/A',
+    }
+
+    # Pass the program details and program name to the template
+    return render_template('dynamic-programs.html', program=program_details, program_name=program_name)
+
+
+@app.route('/manage-programs')
+def manage_programs():
+    ref = db.reference('programs')  # Reference the 'programs' node in Firebase Realtime Database
+    programs = ref.get()  # This will return a list of programs
+    
+    # If the structure is a dictionary, loop through it and format it into a list
+    program_list = [{"program_id": idx, "name": program['name'], "degree":program['degree'], "miniDescription": program['miniDescription'], "overview": program['overview'], "skills": program['skills'], "strengths": program['strengths'], "weaknesses": program['weaknesses'], "category": program['categories'], "image_url": program['image_url'], "benefits": program['benefits'], "career_paths": program["career_paths"], "conclusion": program["conclusion"]} 
+                    for idx, program in enumerate(programs)]
+    
+    return render_template('/admin/manage-programs.html', programs=program_list)
+
+# Route to get a single program for editing
+
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/static/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
+
+@app.route('/get_program/<program_id>', methods=['GET'])
+def get_program(program_id):
+    ref = db.reference(f'programs/{program_id}')  # Reference to a specific program
+    program = ref.get()  # Get the program data
+    if program:
+        return jsonify(program)  # Return the program data as JSON
+    return jsonify({"error": "Program not found"}), 404
+
+@app.route('/add_program', methods=['POST'])
+def add_program():
+    data = request.form  # For image upload, use form instead of JSON
+
+    # Log to check if data is received correctly
+    print("Form data:", data)
+    
+    program_name = data['name']
+    categories = json.loads(data['categories'])  # Convert the string to a list
+    image = request.files.get('image')  # Get the uploaded image file
+
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(UPLOAD_FOLDER, filename))  # Save the image to the static folder
+        image_url = f'uploads/{filename}'  # Store the relative path
+
+        # References
+        program_ref = db.reference('programs')  # Reference to the programs node
+        counter_ref = db.reference('counters/programs')  # Reference to the counter for programs
+
+        # Get the current list of programs
+        programs = program_ref.get() or []
+
+        # Get the current max index from the counter
+        current_index = counter_ref.get() or 0
+        new_index = current_index + 1
+
+        # Update the counter
+        counter_ref.set(new_index)
+
+        # Create the new program entry
+        new_program = {
+            'program_id': new_index,
+            'name': program_name,
+            'categories': categories,
+            'image_url': image_url  # Store the relative image URL
+        }
+
+        # Append the new program to the list
+        programs.append(new_program)
+
+        # Update the programs list in Firebase
+        program_ref.set(programs)
+
+        return jsonify({"message": "Program added successfully", "program_id": new_index}), 201
+    else:
+        return jsonify({"error": "Invalid file format. Only images are allowed."}), 400
+
+@app.route('/update_program/<int:program_id>', methods=['PUT'])
+def update_program(program_id):
+    data = request.form  # For image upload, use form instead of JSON
+
+    # Ensure required fields are present
+    required_fields = ['name', 'degree', 'miniDescription', 'overview', 'categories', 'skills', 'strengths', 'weaknesses', 'benefits', 'career_paths', 'conclusion']
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"message": f"Missing field: {field}"}), 400
+
+    program_name = data['name']
+    miniDescription = data['miniDescription']
+    degree = data['degree']
+    overview = data['overview']
+    categories = json.loads(data['categories'])  # Convert the string to a list
+    image = request.files.get('image')  # Get the uploaded image file (optional)
+    skills = json.loads(data['skills'])
+    strengths = json.loads(data['strengths'])
+    weaknesses = json.loads(data['weaknesses'])
+    benefits = json.loads(data['benefits'])
+    career_paths = json.loads(data['career_paths'])
+    conclusion = data['conclusion']
+
+    # Retrieve the program from the database
+    program_ref = db.reference(f'programs/{program_id}')
+    program = program_ref.get()
+
+    if not program:
+        return jsonify({"message": "Program not found"}), 404
+
+    # Handle the image upload (if any)
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(UPLOAD_FOLDER, filename))
+        image_url = f'uploads/{filename}'
+        program['image_url'] = image_url  # Update the image URL in the database
+
+    # Update other fields
+    program['name'] = program_name
+    program['categories'] = categories
+    program['skills'] = skills
+    program['strengths'] = strengths
+    program['weaknesses'] = weaknesses
+    program['miniDescription'] = miniDescription
+    program['overview'] = overview
+    program['degree'] = degree
+    program['benefits'] = benefits
+    program['career_paths'] = career_paths
+    program['conclusion'] = conclusion
+
+    # Update the program in the database
+    program_ref.set(program)
+
+    return jsonify({"message": "Program updated successfully"}), 200
+
+
+# Route to delete a program
+@app.route('/delete_program/<int:program_id>', methods=['DELETE'])
+def delete_program(program_id):
+    try:
+        program_ref = db.reference('programs')  # Reference to the programs node
+        counter_ref = db.reference('counters/programs')  # Reference to the counter for programs
+
+        # Fetch all programs
+        programs = program_ref.get() or []
+
+        # Find the program with the provided ID
+        program_to_delete = next((p for p in programs if p['program_id'] == program_id), None)
+
+        if not program_to_delete:
+            return jsonify({"error": f"Program with ID {program_id} not found"}), 404
+
+        # Remove the program from the list
+        programs.remove(program_to_delete)
+
+        # If the list is empty after deletion, reset everything
+        if not programs:
+            program_ref.set([])  # Reset the programs list
+            counter_ref.set(0)  # Reset the counter for programs
+            return jsonify({"message": "Program deleted and database is now empty."}), 200
+
+        # If there was an associated image, delete it
+        if 'image_url' in program_to_delete:
+            image_path = os.path.join('static', program_to_delete['image_url'])
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
+        # Reindex the programs and update the program_id inside each program object
+        for idx, program in enumerate(programs, 0):
+            program['program_id'] = idx  # Update the program_id
+
+        # Save the updated programs list back to Firebase
+        program_ref.set(programs)
+
+        # Update the counter
+        current_counter = counter_ref.get() or 0
+        counter_ref.set(current_counter - 1)
+
+        return jsonify({"message": "Program deleted and reindexed successfully"}), 200
+
+    except Exception as e:
+        # Log the error
+        print(f"Error in delete_program: {e}")
+        return jsonify({"error": str(e)}), 500
+    
 # PROGRAMS ROUTES
 
 @app.route('/programs/accountancy')
