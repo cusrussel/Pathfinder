@@ -1,0 +1,150 @@
+{% extends '/admin/sidebar.html' %} {% block content %}
+
+<link rel="stylesheet" href="/static/css/sidebar.css">
+
+<div class = "q-container">
+    <h1>Manage Questionnaire</h1>
+    <div class = "q-content-container">
+
+
+    <!-- Table to display questions -->
+    <table id="questions-table" border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Options</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr id="question-{{ question['question_id'] }}">
+                <td>{{ question['question'] }}</td>
+                <td>
+                    <ul>
+                        {% for option in question['options'] %}
+                            <li>- {{ option['label'] }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <button class = "edit-button" onclick="editQuestion('{{ question['question_id'] }}')">Edit</button>
+                    <button class = "delete-button" onclick="deleteQuestion('{{ question['question_id'] }}')">Delete</button>
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <div id="overlay"></div>
+
+    <!-- Modal or form for adding/editing a question -->
+    <div id="question-form">
+        <h2 id="form-title">Add Question</h2>
+        <label for="question-text">Question:</label>
+        <input type="text" id="question-text" required><br>
+    
+        <label for="options">Options (comma separated):</label>
+        <input type="text" id="options" required><br>
+    
+        <label for="data-field">Data Field:</label>
+        <input type="text" id="data-field" required><br>
+    
+        <button onclick="saveQuestion()">Save</button>
+        <button onclick="closeForm()">Cancel</button>
+    </div>
+</div>
+<button  class = "add-button" onclick="addQuestion()">Add Question</button>
+</div>
+
+    <script>
+        document.getElementById('question-form').style.display = 'none'
+        function addQuestion() {
+            document.getElementById('question-form').style.display = 'block';
+            document.getElementById('form-title').innerText = 'Add Question';
+            document.getElementById('question-text').value = '';
+            document.getElementById('options').value = '';
+            document.getElementById('data-field').value = '';
+            delete document.getElementById('question-form').dataset.questionId; // Clear any existing questionId
+        }
+
+        function editQuestion(questionId) {
+    // Fetch question data via AJAX
+    fetch(`/get_question/${questionId}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('question-form').style.display = 'block';
+            document.getElementById('form-title').innerText = 'Edit Question';
+            document.getElementById('question-text').value = data.question;
+
+            const optionLabels = data.options.map(option => option.label);  // or option.value, depending on which you want
+            document.getElementById('options').value = optionLabels.join(',');
+
+            document.getElementById('data-field').value = data.data_field;  // Set data-field value
+            // Store the question ID for later use
+            document.getElementById('question-form').dataset.questionId = questionId;
+        });
+}
+
+function saveQuestion() {
+    const questionId = document.getElementById('question-form').dataset.questionId;
+    const questionText = document.getElementById('question-text').value;
+    const options = document.getElementById('options').value.split(',').map(option => option.trim());
+    const dataField = document.getElementById('data-field').value;
+
+    const url = questionId ? `/update_question/${questionId}` : '/add_question';
+    const method = questionId ? 'PUT' : 'POST';
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            question: questionText,
+            options: options,
+            data_field: dataField
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message); // Show success message
+        location.reload(); // Reload the page to reflect updated indices
+        closeForm();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while saving the question.");
+    });
+}
+
+function deleteQuestion(questionId) {
+    const confirmed = confirm("Are you sure you want to delete this question?");
+    if (confirmed) {
+        fetch(`/delete_question/${questionId}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message && data.message === "Question deleted and reindexed successfully") {
+                    // Successfully deleted, refresh the list
+                    alert("Question deleted successfully. The list will be refreshed to reflect changes.");
+                    location.reload(); // Reload the page to reflect updated indices
+                } else {
+                    // Handle error (e.g., if delete failed)
+                    alert(data.error || "Failed to delete the question.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while deleting the question.");
+            });
+    }
+}
+
+
+        function closeForm() {
+            document.getElementById('question-form').style.display = 'none';
+        }
+    </script>
+
+{% endblock %}

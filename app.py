@@ -1,14 +1,14 @@
-from flask import Flask, request, jsonify, render_template, Response,  redirect, url_for
+from flask import Flask, request, jsonify, render_template, Response,  redirect, url_for, session, send_from_directory
+from werkzeug.utils import secure_filename
 import pickle
 import pandas as pd
+import hashlib
+from pprint import pprint
 import os
 import json
-
 from dotenv import load_dotenv
-
 from datetime import datetime
 from flask_mail import Mail, Message
-
 import firebase_admin
 from firebase_admin import credentials, db, initialize_app
 
@@ -17,6 +17,7 @@ load_dotenv()
 
 firebase_credentials_str = os.environ.get('FIREBASE_CREDENTIALS')
 database_url = os.environ.get('FIREBASE_DATABASE_URL')
+
 
 # Check if environment variables are set
 if not firebase_credentials_str:
@@ -32,6 +33,12 @@ cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred, {
     'databaseURL': database_url
 })
+
+UPLOAD_FOLDER = 'static/uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+
 app = Flask(__name__)
 
 
@@ -46,11 +53,162 @@ app.config['MAIL_DEBUG'] = True  # Set to False in production
 
 mail = Mail(app)
 
+# Logging Admin Account
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        
+        # Hash the submitted password to compare it with the stored hashed password
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        
+        # Retrieve the stored admin credentials from Realtime Database
+        ref = db.reference('admin')
+        admin_data = ref.get()
+
+        # Check if the provided username and password match the stored ones
+        if admin_data and admin_data.get('username') == username and admin_data.get('password') == hashed_password:
+            return redirect(url_for("admin_dashboard"))
+        else:
+            # Show an alert and reload the login page
+            return render_template('admin/login.html') + '''
+                <script>
+                    alert("Authentication failed. Please try again.");
+                </script>
+            '''
+    
+    # If GET request, show login form
+    return render_template('admin/login.html')
+
+#Route for Admin Login
+@app.route('/admin')
+def admin():
+    return render_template('/admin/login.html')
+
+#Route for admin Dashboard
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    return render_template('/admin/dashboard.html')
+
+# MODIFIED QUESTIONNAIRE
+@app.route('/modify-questions')
+def questions():
+    ref = db.reference('questions')  # Reference the 'questions' node in Realtime Database
+    questions = ref.get()  # This will return a list of questions
+    
+    # If the structure is a list, loop through it
+    question_list = [{"question_id": idx, "question": question['question'], "options": question['options']} 
+                    for idx, question in enumerate(questions)]
+    
+    return render_template('/admin/modify-questionnaire.html', questions=question_list)
+
+# Route to get a single question
+@app.route('/get_question/<question_id>', methods=['GET'])
+def get_question(question_id):
+    ref = db.reference(f'questions/{question_id}')  # Reference to a specific question
+    question = ref.get()  # Get the question data
+    if question:
+        return jsonify(question)  # Return the question data as JSON
+    return jsonify({"error": "Question not found"}), 404
+
+#add questions
+@app.route('/add_question', methods=['POST'])
+def add_question():
+    data = request.get_json()
+
+    # References
+    question_ref = db.reference('questions')  # Reference to the questions node
+    counter_ref = db.reference('counters/questions')  # Reference to the counter for questions
+
+    # Get the current list of questions
+    questions = question_ref.get() or []  # Get the current list or an empty list if none exist
+
+    # Get the current max index from the counter
+    current_index = counter_ref.get() or 0
+    new_index = current_index + 1
+
+    # Update the counter
+    counter_ref.set(new_index)
+
+    # Create the new question entry
+    new_question = {
+        'question_id': new_index,
+        'question': data['question'],
+        'data-field': data['data_field'],
+        'options': [{'label': option, 'value': option} for option in data['options']]
+    }
+
+    # Append the new question to the list
+    questions.append(new_question)
+
+    # Update the questions list in Firebase
+    question_ref.set(questions)
+
+    # Return the newly created question ID
+    return jsonify({"message": "Question added successfully", "question_id": new_index}), 201
+
+#update questions
+@app.route('/update_question/<question_id>', methods=['PUT'])
+def update_question(question_id):
+    data = request.get_json()
+    question_ref = db.reference(f'questions/{question_id}')  # Reference to the specific question
+    question_ref.update({
+        'question': data['question'],
+        'options': [{'label': option, 'value': option} for option in data['options']],
+        'data_field': data['data_field']  # Update the dataField in the database
+    })
+    return jsonify({"message": "Question updated successfully"}), 200
+
+#delete questions
+@app.route('/delete_question/<int:question_id>', methods=['DELETE'])
+def delete_question(question_id):
+    try:
+        question_ref = db.reference('questions')
+        counter_ref = db.reference('counters/questions')
+
+        # Fetch all questions
+        questions = question_ref.get() or []
+
+        # Find the question with the provided ID
+        question_to_delete = next((q for q in questions if q['question_id'] == question_id), None)
+
+        if not question_to_delete:
+            return jsonify({"error": f"Question with ID {question_id} not found"}), 404
+
+        # Remove the question from the list
+        questions.remove(question_to_delete)
+
+        # If the list is empty after deletion, reset everything
+        if not questions:
+            question_ref.set([])
+            counter_ref.set(0)
+            return jsonify({"message": "Question deleted and database is now empty."}), 200
+
+        # Reindex the questions and update the question_id inside each question object
+        for idx, question in enumerate(questions, 0):
+            question['question_id'] = idx  # Update the question_id
+
+        # Save the updated questions list back to Firebase
+        question_ref.set(questions)
+
+        # Decrement the counter
+        current_counter = counter_ref.get() or 0
+        counter_ref.set(current_counter - 1)
+
+        return jsonify({"message": "Question deleted and reindexed successfully"}), 200
+
+    except Exception as e:
+        # Log the error
+        print(f"Error in delete_question: {e}")
+        return jsonify({"error": str(e)}), 500
+    
 @app.errorhandler(404)
 def page_not_found(e):
     # Redirect to the home page
     return redirect(url_for('home'))
 
+#LOADS THE ML MODEL
 def load_model():
     model_path = "decision_tree_model.pkl"
     with open(model_path, "rb") as file:
@@ -67,7 +225,15 @@ def home():
 
 @app.route('/recommender')
 def recommender():
-    return render_template('recommender.html')
+    # Fetch questions directly for rendering
+    ref = db.reference('questions')  # Reference the 'questions' node
+    counter_ref = db.reference('counters/questions')
+    questions = ref.get() 
+
+    total_questions = counter_ref.get()  # Get the total number of questions from Firebase
+    session['total_questions'] = total_questions or 0
+
+    return render_template('recommender.html', questions=questions, total_questions=session['total_questions'])
 
 @app.route('/analysis')
 def analysis():

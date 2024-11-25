@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="/static/css/sidebar.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-details">
+            <a href="">
+                <div class="logo_name">Pathfinder</div>
+            </a>
+            <i class='bx bx-menu' id="btn"></i>
+        </div>
+        <ul class="nav-list">
+            <li>
+                <a href="{{ url_for('admin_dashboard')}}">
+                    <i class='bx bx-home'></i>
+                    <span class="links_name">Home</span>
+                </a>
+                <span class="tooltip">Home</span>
+            </li>
+            <li>
+                <a href="{{ url_for('questions')}}">
+                    <i class='bx bx-question-mark'></i>
+                    <span class="links_name">Questionnaire</span>
+                </a>
+                <span class="tooltip">Questionnaire</span>
+            </li>
+            <li>
+                <a href="">
+                    <i class='bx bx-expand-horizontal'></i>
+                    <span class="links_name">Programs</span>
+                </a>
+                <span class="tooltip">Programs</span>
+            </li>
+            <li>
+                <a href="">
+                    <i class='bx bxs-report'></i>
+                    <span class="links_name">Reports</span>
+                </a>
+                <span class="tooltip">Reports</span>
+            </li>
+            <li>
+                <a href="">
+                    <i class='bx bx-upload'></i>
+                    <span class="links_name">Upload</span>
+                </a>
+                <span class="tooltip">Upload</span>
+            </li>
+            <li>
+                <a href="">
+                    <i class='bx bx-cog'></i>
+                    <span class="links_name">Settings</span>
+                </a>
+                <span class="tooltip">Settings</span>
+            </li>
+        
+            <li class="profile">
+                <div class="profile-details">
+                    <i class='bx bxs-user-circle' ></i>
+                    <div class="name_job">
+                        <div class="name">Admin</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('admin')}}"><i class='bx bx-log-out' id="log_out"></i></a>
+            </li>
+        </ul>
+    </div>
+    <section class="home-section">
+        {% block content %} {% endblock %}
+    </section>
+
+    <script>
+        let sidebar = document.querySelector(".sidebar");
+        let closeBtn = document.querySelector("#btn");
+        let searchBtn = document.querySelector(".bx-search");
+
+        closeBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            menuBtnChange();
+        })
+
+        searchBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            menuBtnChange();
+        })
+
+        function menuBtnChange() {
+            if (sidebar.classList.contains("open")) {
+                closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+            } else {
+                closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+            }
+        }
+
+        menuBtnChange();
+    </script>
+</body>
+</html>

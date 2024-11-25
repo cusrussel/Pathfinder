@@ -1,0 +1,55 @@
+{% extends '/admin/sidebar.html' %} {% block content %}
+<link rel="stylesheet" href="/static/css/sidebar.css">
+<div class = "container">
+    <div class = "content-container">
+        <div class = "container-one">
+            <div class = "one-content">
+                <h1>Questionnaire</h1>
+                <p>Add, Remove, Modify the Questionnaire's Options</p>
+                <a href="{{ url_for('questions')}} ">
+                    <button>MODIFY</button>
+                </a>
+                
+            </div>
+            <div class = "one-content-img">
+                <img src="/static/admin/questionnaire.svg" alt="">
+            </div>
+        </div>
+        <div class = "container-two">
+            <div class = "two-content">
+                <h1>Programs</h1>
+                <p>Add, Remove, Modify the Program Lists</p>
+                <a href="">
+                    <button>MODIFY</button>
+                </a>
+            </div>
+            <div class = "one-content-img">
+                <img src="/static/admin/programs.svg" alt="">
+            </div>
+        </div>
+    </div>
+    <div class = "content-container">
+        <div class = "container-three">
+            <div class = "three-content">
+                <h1>REPORTS</h1>
+                <p>Shows table data and allows to generate reports.</p>
+                <button>SHOW</button>
+            </div>
+            <div class = "one-content-img">
+                <img src="/static/admin/reports.svg" alt="">
+            </div>
+        </div>
+        <div class = "container-four">
+            <div class = "four-content">
+                <h1>UPLOAD</h1>
+                <p>Upload CVS file to retrain the model</p>
+                <button>UPLOAD</button>
+            </div>
+            <div class = "four-content-img">
+                <img src="/static/admin/upload-tr.svg" alt="">
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

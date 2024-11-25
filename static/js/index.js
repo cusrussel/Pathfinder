@@ -278,14 +278,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-let currentQuestion = 1;
-const totalQuestions =  22;
+let currentQuestion = 0;
+const totalQuestionsElement = document.getElementById('total-questions');
+const totalQuestions = totalQuestionsElement.getAttribute('data-total');
 const formData = {
   specialized_subj: 13.149,
   specialization: 11.108,
   core_subj: 11.805,
 };
 
+document.getElementById(`question-${0}`).classList.remove('hidden');
 
 function nextQuestion(event, questionNumber){
 
@@ -303,58 +305,58 @@ function nextQuestion(event, questionNumber){
 
     document.getElementById(`question-${questionNumber}`).classList.add('hidden');
 
-    if (questionNumber === 8) {
+    if (questionNumber === '8') {
         if (value === 'Yes') {
             formData['strand'] = 'None'
-            currentQuestion = 13;
+            currentQuestion = '13';
         }
     }
 
-    if(questionNumber === 9){
+    if(questionNumber === '9'){
         if(value === 'ABM'){
-            currentQuestion = 9;
+            currentQuestion = '9;'
         }
     }
-    if(questionNumber === 10){
+    if(questionNumber === '10'){
         if(abmOptions.includes(value)){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     } 
-    if(questionNumber === 9){
+    if(questionNumber === '9'){
         if(value === 'STEM'){
-            currentQuestion = 10;
+            currentQuestion = '10';
         }
     }
 
-    if(questionNumber === 11){
+    if(questionNumber === '11'){
         if(stemOptions.includes(value)){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     }
-    if(questionNumber === 9){
+    if(questionNumber === '9'){
         if(value === 'HUMSS'){
-            currentQuestion = 11;
+            currentQuestion = '11';
         }
     } 
-    if(questionNumber === 12){
+    if(questionNumber === '12'){
         if(humssOptions.includes(value)){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     }
 
-    if(questionNumber === 9){
+    if(questionNumber === '9'){
         if(value === 'TVL Track'){
-            currentQuestion = 12;
+            currentQuestion = '12';
         }
     }
 
-    if(questionNumber === 13){
+    if(questionNumber === '13'){
         if(value === 'Cookery' || value === 'ICT/CSS'){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     }
 
-    if(questionNumber === 16){
+    if(questionNumber === '16'){
       const secondaryButtons = document.querySelectorAll('#question-17 .r-buttons button');
       secondaryButtons.forEach(button => {
         if (button.getAttribute('data-value') === value) {
