@@ -278,11 +278,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+console.log(sessionStorage.getItem('total_questions'));
 let currentQuestion = 0;
 const totalQuestionsElement = document.getElementById('total-questions');
 const totalQuestions = totalQuestionsElement.getAttribute('data-total');
 const formData = {
   specialized_subj: 13.149,
+  strand: 11.105,
   specialization: 11.108,
   core_subj: 11.805,
 };
@@ -304,55 +306,57 @@ function nextQuestion(event, questionNumber){
     console.log(Object.entries(formData));
 
     document.getElementById(`question-${questionNumber}`).classList.add('hidden');
-
+  
+    // Conditional logic to move to the next question
     if (questionNumber === '8') {
-        if (value === 'Yes') {
+      // If the answer is "No", skip question 4
+        if (value === 'No') {
             formData['strand'] = 'None'
-            currentQuestion = '13';
+            currentQuestion = 13; // Skip to question 5, change this number based on the actual next question
         }
     }
 
     if(questionNumber === '9'){
         if(value === 'ABM'){
-            currentQuestion = '9;'
+            currentQuestion = 9;
         }
     }
     if(questionNumber === '10'){
         if(abmOptions.includes(value)){
-            currentQuestion = '14';
+            currentQuestion = 14;
         }
     } 
     if(questionNumber === '9'){
         if(value === 'STEM'){
-            currentQuestion = '10';
+            currentQuestion = 10;
         }
     }
 
     if(questionNumber === '11'){
         if(stemOptions.includes(value)){
-            currentQuestion = '14';
+            currentQuestion = 14;
         }
     }
     if(questionNumber === '9'){
         if(value === 'HUMSS'){
-            currentQuestion = '11';
+            currentQuestion = 11;
         }
     } 
     if(questionNumber === '12'){
         if(humssOptions.includes(value)){
-            currentQuestion = '14';
+            currentQuestion = 14;
         }
     }
 
     if(questionNumber === '9'){
         if(value === 'TVL Track'){
-            currentQuestion = '12';
+            currentQuestion = 12;
         }
     }
 
     if(questionNumber === '13'){
         if(value === 'Cookery' || value === 'ICT/CSS'){
-            currentQuestion = '14';
+            currentQuestion = 14;
         }
     }
 
@@ -361,12 +365,10 @@ function nextQuestion(event, questionNumber){
       secondaryButtons.forEach(button => {
         if (button.getAttribute('data-value') === value) {
           button.disabled = true;
-          button.style.opacity = 0.5; 
+          button.style.opacity = 0.5; // optional visual effect
         }
       });
     }
-
-    
 
     currentQuestion++;
     if (currentQuestion <= totalQuestions) {
@@ -380,7 +382,6 @@ function nextQuestion(event, questionNumber){
             document.getElementById("loader-container").style.display = "none";
             document.getElementById('r-result').classList.add('show');
         }, 3000);
-
         document.getElementById(`question-${currentQuestion}`).classList.add('show');
     }
 }

@@ -231,7 +231,7 @@ def recommender():
     questions = ref.get() 
 
     total_questions = counter_ref.get()  # Get the total number of questions from Firebase
-    session['total_questions'] = total_questions or 21
+    session['total_questions'] = total_questions or 0
 
     return render_template('recommender.html', questions=questions, total_questions=session['total_questions'])
 
