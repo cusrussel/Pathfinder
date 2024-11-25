@@ -323,55 +323,55 @@ function nextQuestion(event, questionNumber){
       // If the answer is "No", skip question 4
         if (value === 'No') {
             formData['strand'] = 'None'
-            currentQuestion = 13; // Skip to question 5, change this number based on the actual next question
+            currentQuestion = 12; // Skip to question 5, change this number based on the actual next question
         }
     }
 
-    if(questionNumber === 9){
+    if(questionNumber === '8'){
         if(value === 'ABM'){
+            currentQuestion = 8;
+        }
+    }
+    if(questionNumber === '9'){
+        if(abmOptions.includes(value)){
+            currentQuestion = 13;
+        }
+    } 
+    if(questionNumber === '8'){
+        if(value === 'STEM'){
             currentQuestion = 9;
         }
     }
-    if(questionNumber === 10){
-        if(abmOptions.includes(value)){
-            currentQuestion = 14;
+
+    if(questionNumber === '8'){
+        if(stemOptions.includes(value)){
+            currentQuestion = 13;
         }
-    } 
-    if(questionNumber === 9){
-        if(value === 'STEM'){
+    }
+    if(questionNumber === '8'){
+        if(value === 'HUMSS'){
             currentQuestion = 10;
         }
-    }
-
-    if(questionNumber === 11){
-        if(stemOptions.includes(value)){
-            currentQuestion = 14;
+    } 
+    if(questionNumber === '13'){
+        if(humssOptions.includes(value)){
+            currentQuestion = 13;
         }
     }
-    if(questionNumber === 9){
-        if(value === 'HUMSS'){
+
+    if(questionNumber === '8'){
+        if(value === 'TVL Track'){
             currentQuestion = 11;
         }
-    } 
-    if(questionNumber === 12){
-        if(humssOptions.includes(value)){
-            currentQuestion = 14;
-        }
     }
 
-    if(questionNumber === 9){
-        if(value === 'TVL Track'){
-            currentQuestion = 12;
-        }
-    }
-
-    if(questionNumber === 13){
+    if(questionNumber === '12'){
         if(value === 'Cookery' || value === 'ICT/CSS'){
-            currentQuestion = 14;
+            currentQuestion = 13;
         }
     }
 
-    if(questionNumber === 16){
+    if(questionNumber === '15'){
       const secondaryButtons = document.querySelectorAll('#question-17 .r-buttons button');
       secondaryButtons.forEach(button => {
         if (button.getAttribute('data-value') === value) {
