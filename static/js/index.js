@@ -290,6 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (element) {
       var totalQuestions = element.getAttribute('data-total');
       console.log(totalQuestions);
+      document.getElementById(`question-${0}`).classList.remove('hidden');
   }
 });
 
@@ -300,7 +301,6 @@ const formData = {
   core_subj: 11.805,
 };
 
-document.getElementById(`question-${0}`).classList.remove('hidden');
 
 function nextQuestion(event, questionNumber){
 
