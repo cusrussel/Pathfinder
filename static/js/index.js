@@ -329,45 +329,45 @@ function nextQuestion(event, questionNumber){
 
     if(questionNumber === '9'){
         if(value === 'ABM'){
-            currentQuestion = 9;
+            currentQuestion = '9';
         }
     }
     if(questionNumber === '10'){
         if(abmOptions.includes(value)){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     } 
     if(questionNumber === '9'){
         if(value === 'STEM'){
-            currentQuestion = 10;
+            currentQuestion = '10';
         }
     }
 
     if(questionNumber === '11'){
         if(stemOptions.includes(value)){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     }
     if(questionNumber === '9'){
         if(value === 'HUMSS'){
-            currentQuestion = 11;
+            currentQuestion = '11';
         }
     } 
     if(questionNumber === '12'){
         if(humssOptions.includes(value)){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     }
 
     if(questionNumber === '9'){
         if(value === 'TVL Track'){
-            currentQuestion = 12;
+            currentQuestion = '12';
         }
     }
 
     if(questionNumber === '13'){
         if(value === 'Cookery' || value === 'ICT/CSS'){
-            currentQuestion = 14;
+            currentQuestion = '14';
         }
     }
 
