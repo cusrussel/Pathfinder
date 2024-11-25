@@ -283,7 +283,7 @@ let currentQuestion = 0;
 // const totalQuestionsElement = document.getElementById('total-questions');
 // const totalQuestions = totalQuestionsElement.getAttribute('data-total');
 
-const totalQuestions = null;
+const totalQuestions = 21;
 
 document.addEventListener('DOMContentLoaded', function() {
   var element = document.getElementById('total-questions');
