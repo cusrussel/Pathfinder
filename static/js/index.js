@@ -319,7 +319,7 @@ function nextQuestion(event, questionNumber){
     document.getElementById(`question-${questionNumber}`).classList.add('hidden');
   
     // Conditional logic to move to the next question
-    if (questionNumber === 7) {
+    if (questionNumber === '7') {
       // If the answer is "No", skip question 4
         if (value === 'No') {
             formData['strand'] = 'None'
