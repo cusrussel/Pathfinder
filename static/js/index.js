@@ -280,8 +280,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 console.log(sessionStorage.getItem('total_questions'));
 let currentQuestion = 0;
-const totalQuestionsElement = document.getElementById('total-questions');
-const totalQuestions = totalQuestionsElement.getAttribute('data-total');
+// const totalQuestionsElement = document.getElementById('total-questions');
+// const totalQuestions = totalQuestionsElement.getAttribute('data-total');
+
+const totalQuestions = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+  var element = document.getElementById('total-questions');
+  if (element) {
+      var totalQuestions = element.getAttribute('data-total');
+      console.log(totalQuestions);
+  }
+});
+
 const formData = {
   specialized_subj: 13.149,
   strand: 11.105,
