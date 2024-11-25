@@ -300,7 +300,7 @@ const formData = {
   core_subj: 11.805,
 };
 
-document.getElementById(`question-${0}`).classList.remove('hidden');
+document.getElementById(`question-${'0'}`).classList.remove('hidden');
 
 function nextQuestion(event, questionNumber){
 
