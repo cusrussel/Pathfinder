@@ -107,6 +107,33 @@ def admin_dashboard():
 def admin_reports():
     return render_template('admin/reports.html')
 
+#ROUTE FOR ADMIN SETTINGS
+@app.route('/admin/settings', methods=['GET', 'POST'])
+@admin_required
+def settings():
+    ref = db.reference('admin')
+    admin_data = ref.get()
+
+    if request.method == 'POST':
+        username = request.form['username']
+        current_password = request.form['current_password']
+        new_password = request.form['new_password']
+
+        if admin_data and username == admin_data.get('username'):
+            # Hash the current password and compare it to the stored hashed password
+            hashed_current_password = hashlib.sha256(current_password.encode()).hexdigest()
+            if hashed_current_password == admin_data.get('password'):
+                # Hash the new password and update it in the database
+                hashed_new_password = hashlib.sha256(new_password.encode()).hexdigest()
+                ref.update({'password': hashed_new_password})
+                return jsonify({"success": True, "message": "Password updated successfully!"}), 200
+            else:
+                return jsonify({"success": False, "message": "Current password is incorrect."}), 400
+        else:
+            return jsonify({"success": False, "message": "Admin user not found."}), 404
+
+    return render_template('admin/settings.html', admin_info=admin_data)
+
 # MODIFIED QUESTIONNAIRE
 @app.route('/admin/modify-questions')
 @admin_required

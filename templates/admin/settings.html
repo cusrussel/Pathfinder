@@ -1,0 +1,69 @@
+{% extends '/admin/sidebar.html' %} {% block content %}
+{% if admin_info %}
+
+<link rel="stylesheet" href="/static/css/setting.css">
+    <div class = "settings-back">
+        <div class = "settings-container">
+            <div class = "settings-left">
+                <div>
+                    <h1>Change Password</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium rem sit maxime, doloribus accusamus voluptatem architecto! Aliquam, aliquid. Voluptatum omnis possimus dignissimos quam natus odio porro. Recusandae obcaecati voluptate suscipit!</p>
+                </div>
+                <form action="/admin/settings" method="POST" onsubmit="handleFormSubmit(event)">
+                    <div>
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" value="{{ admin_info.username }}" readonly>
+                    </div>
+                    
+                    <div>
+                        <label for="current_password">Current Password:</label>
+                        <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required>
+                    </div>
+    
+                    <div>
+                        <label for="new_password">New Password:</label>
+                        <input type="password" id="new_password" name="new_password" placeholder="Enter new password" required>
+                    </div>
+    
+                    <div>
+                        <label for=""></label>
+                        <input type="submit" value="Update Password">
+                    </div>
+                </form>
+            </div>
+            
+            <div class = "settings-right">
+                <div>
+                    <img src="/static/images/admin/settings.gif" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <p>No admin information found.</p>
+    {% endif %}
+
+    <script>
+        async function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent the form from submitting traditionally
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            // Send the form data to the server
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            // Parse the server response
+            const result = await response.json();
+            alert(result.message); // Show the alert with the server message
+
+            // If successful, you can optionally reset the form or take another action
+            if (result.success) {
+                form.reset();
+            }
+        }
+    </script>
+{% endblock %}
