@@ -344,42 +344,8 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
         // Update the total count in the designated element
         const totalElement = document.getElementById('total-strand-count'); // Example: an element with ID 'total-strand-count'
         if (totalElement) {
-            totalElement.innerHTML = totalCount; // Set the total count as the text content
+            totalElement.innerHTML = totalCount.toFixed(2)
             document.getElementById('total-strand-percentage').innerHTML = totalCount + '%'
-        }
-
-        console.log('Total Count for STEM, ABM, HUMSS, TVL:', totalCount); // Log the total count
-    })
-    .catch(error => {
-        console.error('Error fetching strand data:', error);
-    });
-
-
-    fetch('/api/strand') // Adjust the endpoint as necessary
-    .then(response => response.json())
-    .then(data => {
-        const strands = ['STEM', 'ABM', 'HUMSS', 'TVL Track']; // List of strands to include
-        let totalCount = 0; // Initialize the total count
-
-        // Iterate through the strand data
-        Object.keys(data).forEach(strand => {
-            const userCount = data[strand] || 0; // Get the user count or default to 0 if undefined
-
-            // Check if the strand is in the target list
-            if (strands.includes(strand)) {
-                totalCount += userCount; // Add to the total count
-            }
-
-            const element = document.getElementById(strand); // Get the element by strand ID
-            if (element) {
-                element.innerHTML = userCount; // Set the user count as the text content of the element
-            }
-        });
-
-        // Update the total count in the designated element
-        const totalElement = document.getElementById('total-strand-count'); // Example: an element with ID 'total-strand-count'
-        if (totalElement) {
-            totalElement.innerHTML = totalCount; // Set the total count as the text content
         }
 
         console.log('Total Count for STEM, ABM, HUMSS, TVL:', totalCount); // Log the total count

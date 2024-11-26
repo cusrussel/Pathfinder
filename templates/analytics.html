@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-<link rel="stylesheet" href="/static/graphs.css" />
+<link rel="stylesheet" href="/static/css/graphs.css" />
 
     <div class = "graph-main">
         <div class = "graph-container">
@@ -155,7 +155,7 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
         // Update the total count in the designated element
         const totalElement = document.getElementById('total-strand-count'); // Example: an element with ID 'total-strand-count'
         if (totalElement) {
-            totalElement.innerHTML = totalCount; // Set the total count as the text content
+            totalElement.innerHTML = totalCount.toFixed(2); // Set the total count as the text content
             document.getElementById('total-strand-percentage').innerHTML = totalCount + '%'
         }
 
