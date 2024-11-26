@@ -11,6 +11,7 @@ from datetime import datetime
 from flask_mail import Mail, Message
 import firebase_admin
 from firebase_admin import credentials, db, initialize_app
+from functools import wraps
 
 
 load_dotenv()
@@ -33,6 +34,15 @@ cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred, {
     'databaseURL': database_url
 })
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('admin_logged_in'):
+            # Redirect to the login page if not authenticated
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 UPLOAD_FOLDER = 'static/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -59,26 +69,25 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        
+
         # Hash the submitted password to compare it with the stored hashed password
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
-        
+
         # Retrieve the stored admin credentials from Realtime Database
         ref = db.reference('admin')
         admin_data = ref.get()
 
         # Check if the provided username and password match the stored ones
         if admin_data and admin_data.get('username') == username and admin_data.get('password') == hashed_password:
+            session['admin_logged_in'] = True  # Set session variable
             return redirect(url_for("admin_dashboard"))
         else:
-            # Show an alert and reload the login page
             return render_template('admin/login.html') + '''
                 <script>
                     alert("Authentication failed. Please try again.");
                 </script>
             '''
-    
-    # If GET request, show login form
+
     return render_template('admin/login.html')
 
 #Route for Admin Login
@@ -88,11 +97,19 @@ def admin():
 
 #Route for admin Dashboard
 @app.route('/admin/dashboard')
+@admin_required
 def admin_dashboard():
-    return render_template('/admin/dashboard.html')
+    return render_template('admin/dashboard.html')
+
+#Route for admin Reports
+@app.route('/admin/reports')
+@admin_required
+def admin_reports():
+    return render_template('admin/reports.html')
 
 # MODIFIED QUESTIONNAIRE
-@app.route('/modify-questions')
+@app.route('/admin/modify-questions')
+@admin_required
 def questions():
     ref = db.reference('questions')  # Reference the 'questions' node in Realtime Database
     questions = ref.get()  # This will return a list of questions
@@ -302,7 +319,8 @@ def program_details(program_name):
     return render_template('dynamic-programs.html', program=program_details, program_name=program_name)
 
 
-@app.route('/manage-programs')
+@app.route('/admin/manage-programs')
+@admin_required
 def manage_programs():
     ref = db.reference('programs')  # Reference the 'programs' node in Firebase Realtime Database
     programs = ref.get()  # This will return a list of programs
@@ -565,6 +583,43 @@ def get_demographic_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
 
+@app.route('/api/demographicPercentage', methods=['GET'])
+def get_demographic_data_percentage():
+    try:
+        # Reference the 'users' node in your Firebase database
+        users_ref = db.reference('users')
+        users_data = users_ref.get()  # Fetch all user data
+
+        # Initialize a dictionary to count users by sex
+        data = {}
+        total_users = 0
+        
+        # Iterate through the user data
+        if users_data:
+            for user in users_data.values():
+                gender = user.get('sex')  # Get the sex of the user
+                
+                # Increment the count for this gender
+                if gender in data:
+                    data[gender] += 1
+                else:
+                    data[gender] = 1
+                
+                total_users += 1  # Count the total number of users
+
+        # Calculate percentages
+        if total_users > 0:
+            for gender in data:
+                percentage = (data[gender] / total_users) * 100
+                data[gender] = {
+                    "count": data[gender],
+                    "percentage": round(percentage, 2)  # Round to 2 decimal places
+                }
+
+        return jsonify(data), 200  # Return JSON with HTTP 200 status code
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Return error if something goes wrong
 
 @app.route('/api/user_count', methods=['GET'])
 def get_total_user_count():
@@ -592,6 +647,78 @@ def get_strand():
         # Initialize a dictionary to count users per strand
         data = {}
 
+        # Total number of users
+        total_users = 0
+
+        # Iterate through the user data
+        if users_data:
+            for user in users_data.values():
+                strand = user.get('strand')  # Get the strand of the user
+                total_users += 1  # Increment total user count
+                
+                # Increment the count for this strand
+                if strand in data:
+                    data[strand] += 1
+                else:
+                    data[strand] = 1
+
+        # Calculate the percentage for each strand and round to 2 decimals
+        if total_users > 0:
+            for strand in data:
+                percentage = round((data[strand] / total_users) * 100, 2)  # Calculate percentage
+                data[strand] = percentage  # Append percentage symbol
+
+        return jsonify(data), 200  # Return JSON with HTTP 200 status code
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Return error if something goes wrong
+
+@app.route('/api/strandPercentage', methods=['GET'])
+def get_strandPercentage():
+    try:
+        # Reference the 'users' node in your Firebase database
+        users_ref = db.reference('users')
+        users_data = users_ref.get()  # Fetch all user data
+
+        # Initialize a dictionary to count users per strand
+        data = {}
+
+        # Total number of users
+        total_users = 0
+
+        # Iterate through the user data
+        if users_data:
+            for user in users_data.values():
+                strand = user.get('strand')  # Get the strand of the user
+                total_users += 1  # Increment total user count
+
+                # Increment the count for this strand
+                if strand in data:
+                    data[strand] += 1
+                else:
+                    data[strand] = 1
+
+        # Calculate the percentage for each strand and format with a '%' symbol
+        if total_users > 0:
+            for strand in data:
+                percentage = round((data[strand] / total_users) * 100, 2)  # Calculate percentage
+                data[strand] = f"{percentage}%"  # Format as a string with a percentage symbol
+
+        return jsonify(data), 200  # Return JSON with HTTP 200 status code
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Return error if something goes wrong
+    
+@app.route('/api/strands', methods =['GET'])
+def get_strands():
+    try:
+        # Reference the 'users' node in your Firebase database
+        users_ref = db.reference('users')
+        users_data = users_ref.get()  # Fetch all user data
+
+        # Initialize a dictionary to count users per strand
+        data = {}
+
         # Iterate through the user data
         if users_data:
             for user in users_data.values():
@@ -607,7 +734,7 @@ def get_strand():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Return error if something goes wrong
-
+    
 @app.route('/api/data', methods=['GET'])
 def get_chart_data():
     strand_filter = request.args.get('strand', 'All')  # Default to 'All' if no filter is provided
@@ -646,7 +773,57 @@ def get_chart_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Return error if something goes wrong
 
+@app.route('/api/percentage', methods=['GET'])
+def get_chart_percentage():
+    strand_filter = request.args.get('strand', 'All').strip()  # Normalize input to remove extra spaces
 
+    try:
+        # Reference the 'users' node in your Firebase database
+        users_ref = db.reference('users')
+        users_data = users_ref.get()  # Fetch all user data
+
+        # Initialize variables for the filtered data
+        program_counts = {}
+        total_in_strand = 0
+
+        # Process each user's data
+        if users_data:
+            for user in users_data.values():
+                # Normalize strand and program names for comparison
+                strand = user.get('strand', '').strip()
+                program = user.get('output_1', '').strip()
+
+                # Skip users without strand or program data
+                if not strand or not program:
+                    continue
+
+                # Normalize case to ensure matching is case-insensitive
+                if strand_filter.lower() != 'all' and strand.lower() != strand_filter.lower():
+                    continue
+
+                # Count the total users in the filtered strand
+                total_in_strand += 1
+
+                # Count occurrences of each program
+                if program in program_counts:
+                    program_counts[program] += 1
+                else:
+                    program_counts[program] = 1
+
+        # Avoid division by zero
+        if total_in_strand == 0:
+            return jsonify({"error": "No users found for the selected strand"}), 404
+
+        # Calculate percentages for each program
+        program_percentages = {
+            program: round((count / total_in_strand) * 100, 2)
+            for program, count in program_counts.items()
+        }
+
+        return jsonify(program_percentages), 200  # Return JSON with HTTP 200 status code
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Return error if something goes wrong
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -985,6 +1162,11 @@ def process_data(data):
 
 
     return processed_data
+
+@app.route('/logout')
+def logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))

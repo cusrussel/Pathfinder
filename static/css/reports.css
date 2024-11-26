@@ -27,7 +27,7 @@
     justify-content: center;
 }
 .graph-container{
-    margin-top: -5px;
+    margin-top: 20px;
     width: 90%;
     display: flex;
     height: 90vh;
@@ -108,6 +108,8 @@
     background-color: white;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
+
+
 
 #demographicChart{
     height: 20px;
@@ -263,10 +265,109 @@
     justify-content: center;
 }
 
-.graph-per-programs h1{
+
+
+
+.graph-programs h1{
     font-size: 20px;    
 }
 
 #myChart{
     width: 1100px;
+}
+
+.download {
+    position: fixed;
+    bottom: 25px;  /* Adjust this value to your desired distance from the bottom */
+    right: 25px;   /* Adjust this value to your desired distance from the right */
+    z-index: 1000;
+    padding: 10px 15px;  /* Optional: add padding for button size */
+    background-color: var(--green);  /* Optional: style for the button */
+    color: var(--white);   /* Optional: text color */
+    border-radius: 30%;  /* Optional: rounded corners */
+    text-align: center;  /* Center the text */
+    border: none;
+    cursor: pointer;  /* Change cursor to pointer when hovering over */
+}
+
+.download i{
+    font-size: 30px;
+}
+.tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    bottom: 20%; /* Position above the button */
+    left: -125%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+}
+
+.download:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+table {
+    width: 70%;
+    border-collapse: collapse;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    border: 1px solid #000;
+    padding: 10px; /* Consistent cell spacing */
+}
+
+table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-align: center; /* Align headers to center */
+}
+
+table .th-first, .td-first{
+    text-align: start;
+}
+
+table tbody td {
+    text-align: center; /* Align table data to center */
+}
+
+table tbody tr td[colspan="2"] {
+    text-align: center; /* Align centered cells properly */
+}
+
+.report-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+    align-items: center;
+}
+
+#report h4{
+    margin-left: 5px;
+    margin-top: 30px;
+    color: var(--green);
+}
+
+
+@media print {
+    body {
+        width: auto;
+        margin: 0;
+    }
+
+    table {
+        width: 70% !important; /* Force a smaller width for print */
+        margin: 0 auto; /* Center the table on the page */
+    }
 }
