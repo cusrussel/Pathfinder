@@ -19,7 +19,7 @@
             <div class = "two-content">
                 <h1>Programs</h1>
                 <p>Add, Remove, Modify the Program Lists</p>
-                <a href="">
+                <a href="{{ url_for('manage_programs')}} ">
                     <button>MODIFY</button>
                 </a>
             </div>
@@ -33,7 +33,9 @@
             <div class = "three-content">
                 <h1>REPORTS</h1>
                 <p>Shows table data and allows to generate reports.</p>
-                <button>SHOW</button>
+                <a href="{{ url_for('admin_reports')}} ">
+                    <button>Show</button>
+                </a>
             </div>
             <div class = "one-content-img">
                 <img src="/static/images/admin/reports.svg" alt="">
