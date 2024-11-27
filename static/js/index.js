@@ -321,7 +321,7 @@ function nextQuestion(event, questionNumber){
     // Conditional logic to move to the next question
     if (questionNumber === '7') {
       // If the answer is "No", skip question 4
-        if (value === 'No') {
+        if (value === 'Yes') {
             formData['strand'] = 'None'
             currentQuestion = 12; // Skip to question 5, change this number based on the actual next question
         }
@@ -343,7 +343,7 @@ function nextQuestion(event, questionNumber){
         }
     }
 
-    if(questionNumber === '8'){
+    if(questionNumber === '10'){
         if(stemOptions.includes(value)){
             currentQuestion = 13;
         }
@@ -353,14 +353,14 @@ function nextQuestion(event, questionNumber){
             currentQuestion = 10;
         }
     } 
-    if(questionNumber === '13'){
+    if(questionNumber === '11'){
         if(humssOptions.includes(value)){
             currentQuestion = 13;
         }
     }
 
     if(questionNumber === '8'){
-        if(value === 'TVL Track'){
+        if(value === 'TVL'){
             currentQuestion = 11;
         }
     }
@@ -372,7 +372,7 @@ function nextQuestion(event, questionNumber){
     }
 
     if(questionNumber === '15'){
-      const secondaryButtons = document.querySelectorAll('#question-17 .r-buttons button');
+      const secondaryButtons = document.querySelectorAll('#question-16 .r-buttons button');
       secondaryButtons.forEach(button => {
         if (button.getAttribute('data-value') === value) {
           button.disabled = true;
