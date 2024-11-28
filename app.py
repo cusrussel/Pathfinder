@@ -1,19 +1,43 @@
-from flask import Flask, request, jsonify, render_template, Response,  redirect, url_for, session, send_from_directory
+from flask import Flask, request, jsonify, render_template, Response, redirect, url_for, session, send_from_directory
 from werkzeug.utils import secure_filename
 import pickle
 import pandas as pd
-import hashlib
-from pprint import pprint
-import os
-import json
-from dotenv import load_dotenv
 from datetime import datetime
 from flask_mail import Mail, Message
 import firebase_admin
 from firebase_admin import credentials, db, initialize_app
+from pprint import pprint
+import hashlib
+import os
+import json
 from functools import wraps
 
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import pickle
 
+from datetime import datetime
+import pytz
+
+import warnings
+warnings.filterwarnings('ignore')
+
+#Import algorithms
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, ConfusionMatrixDisplay
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import export_graphviz
+
+import category_encoders as ce
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+from dotenv import load_dotenv
 load_dotenv()
 
 firebase_credentials_str = os.environ.get('FIREBASE_CREDENTIALS')
