@@ -38,6 +38,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 firebase_credentials_str = os.environ.get('FIREBASE_CREDENTIALS')
@@ -82,6 +83,8 @@ os.makedirs(UPLOAD_FOLDER_MODEL, exist_ok=True)
 app = Flask(__name__)
 
 app.secret_key = os.environ.get('APP_SECRET_KEY')
+app.config['UPLOAD_FOLDER_CSV'] = UPLOAD_FOLDER_CSV
+app.config['UPLOAD_FOLDER_MODEL'] = UPLOAD_FOLDER_MODEL
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
 app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
@@ -90,8 +93,6 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_DEBUG'] = True  # Set to False in production
-app.config['UPLOAD_FOLDER_CSV'] = os.getenv('UPLOAD_FOLDER_CSV')
-app.config['UPLOAD_FOLDER_MODEL'] = os.getenv('UPLOAD_FOLDER_MODEL')
 
 mail = Mail(app)
 
