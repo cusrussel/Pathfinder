@@ -146,6 +146,33 @@
   }
 }
 
+function resetQuestions() {
+  currentQuestion = 1;
+
+  const allQuestions = document.querySelectorAll('[id^="question-"]');
+  allQuestions.forEach((question) => {
+      question.classList.add('hidden');
+  });
+
+  const firstQuestion = document.getElementById('question-1');
+  if (firstQuestion) {
+      firstQuestion.classList.remove('hidden');
+  }
+
+  updateNextButtonState();
+}
+
+function begin(){
+  document.getElementById('r-begin').classList.remove("show");
+  document.getElementById('r-content').classList.add('hidden');
+  document.getElementById('loader-container').style.display="flex";
+  document.getElementById('loader-msg').innerText = "Preparing the questions...";
+  setTimeout(function() {
+    document.getElementById("loader-container").style.display = "none";
+    document.getElementById('r-questions').classList.add("show");
+}, 3000);
+}
+
 function hideContentAgain(){
   document.getElementById('r-result').classList.remove("show");
     document.getElementById('r-content').classList.remove("show");
@@ -157,6 +184,7 @@ function hideContentAgain(){
   });
 
     begin();
+    resetQuestions();
 }
 
 let onepred, twopred, threepred;
