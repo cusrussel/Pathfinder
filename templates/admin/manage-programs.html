@@ -11,10 +11,12 @@
                 <tr>
                     <th>Program Name</th>
                     <th>Image</th>
+                    <th>Logo</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
+                
                 {% for program in programs %}
                     <tr id="program-{{ program['program_id'] }}">
                         <td>
@@ -23,10 +25,12 @@
                             </a>
                         </td>
                         <td>
-                            <img src="{{ url_for('static', filename=program['image_url']) }}" alt="{{ program['name'] }} logo" style="width: 100px;">
+                            <img src="{{ program['image_url'] }}" alt="{{ program['name'] }} logo" style="width: 100px;">
                         </td>
                         <td>
-
+                            <img src="{{ program['logo_url'] }}" alt="{{ program['name'] }} logo" style="width: 100px;">
+                        </td>
+                        <td>
                             <button class="edit-button" onclick="editProgram('{{ program['program_id'] }}')">Edit</button>
                             <button class="delete-button" onclick="deleteProgram('{{ program['program_id'] }}')">Delete</button>
                         </td>
@@ -138,10 +142,13 @@
             <div class = "six-image">
                 <label for="program-image">Image:</label>
                 <input type="file" id="program-image" required><br>
+                <label for="program-image">Logo:</label>
+                <input type="file" id="program-logo" required><br>
             </div>  
+
+            
         </div>
     </div>
-
     
     <button class="add-button" onclick="addProgram()">Add Program</button>
 </div>
@@ -151,79 +158,87 @@
 
     // Show the form for adding a program
     function addProgram() {
-        document.getElementById('program-form').style.display = 'block';
-        document.getElementById('form-title').innerText = 'New Program Informations';
-        document.getElementById('direction').innerText = 'Please fill out all fields in the form, including program details, skills, strengths, weaknesses, benefits, career paths, and a conclusion, to create a new program.';
-        document.getElementById('program-Name').value = '';
-        document.getElementById('program-degree').value = '';
-        document.getElementById('program-miniDescription').value = '';
-        document.getElementById('program-overview').value = '';
-        document.getElementById('program-categories').value = '';
-        document.getElementById('program-Skills').value = '';
-        document.getElementById('program-Strengths').value = '';
-        document.getElementById('program-Weaknesses').value = '';
-        document.getElementById('program-Benefits').value = '';
-        document.getElementById('program-Career_Paths').value = '';
-        document.getElementById('program-Conclusion').value = '';
+    document.getElementById('program-form').style.display = 'block';
+    document.getElementById('form-title').innerText = 'New Program Information';
+    document.getElementById('direction').innerText = 'Please fill out all fields in the form, including program details, skills, strengths, weaknesses, benefits, career paths, and a conclusion, to create a new program.';
+    
+    // Clear all fields
+    document.getElementById('program-Name').value = '';
+    document.getElementById('program-degree').value = '';
+    document.getElementById('program-miniDescription').value = '';
+    document.getElementById('program-overview').value = '';
+    document.getElementById('program-categories').value = '';
+    document.getElementById('program-Skills').value = '';
+    document.getElementById('program-Strengths').value = '';
+    document.getElementById('program-Weaknesses').value = '';
+    document.getElementById('program-Benefits').value = '';
+    document.getElementById('program-Career_Paths').value = '';
+    document.getElementById('program-Conclusion').value = '';
+    
+    // Reset image and logo inputs
+    document.getElementById('program-image').value = '';
+    document.getElementById('program-logo').value = '';
 
-        document.getElementById('program-Name').placeholder = "Enter the official program name.";
-            document.getElementById('program-degree').placeholder = "E.g., Bachelor's, Master's.";
-            document.getElementById('program-miniDescription').placeholder = "Write a brief overview (max 100 words).";
-            document.getElementById('program-overview').placeholder = "Provide a detailed program overview.";
-            document.getElementById('program-categories').placeholder = "Separate categories by commas.";
-            document.getElementById('program-Skills').placeholder = "List key skills, separated by commas.";
-            document.getElementById('program-Strengths').placeholder = "List program strengths.";
-            document.getElementById('program-Weaknesses').placeholder = "List program weaknesses.";
-            document.getElementById('program-Benefits').placeholder = "List benefits, separated by commas or periods.";
-            document.getElementById('program-Career_Paths').placeholder = "List career paths, separated by commas or periods.";
-            document.getElementById('program-Conclusion').placeholder = "Write a brief conclusion.";
+    // Placeholder text for inputs
+    document.getElementById('program-Name').placeholder = "Enter the official program name.";
+    document.getElementById('program-degree').placeholder = "E.g., Bachelor's, Master's.";
+    document.getElementById('program-miniDescription').placeholder = "Write a brief overview (max 100 words).";
+    document.getElementById('program-overview').placeholder = "Provide a detailed program overview.";
+    document.getElementById('program-categories').placeholder = "Separate categories by commas.";
+    document.getElementById('program-Skills').placeholder = "List key skills, separated by commas.";
+    document.getElementById('program-Strengths').placeholder = "List program strengths.";
+    document.getElementById('program-Weaknesses').placeholder = "List program weaknesses.";
+    document.getElementById('program-Benefits').placeholder = "List benefits, separated by commas or periods.";
+    document.getElementById('program-Career_Paths').placeholder = "List career paths, separated by commas or periods.";
+    document.getElementById('program-Conclusion').placeholder = "Write a brief conclusion.";
+}
 
+// Show the form for editing a program
+function editProgram(programId) {
+    fetch(`/get_program/${programId}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('program-form').style.display = 'block';
+            document.getElementById('form-title').innerText = 'Modify Program Information';
+            document.getElementById('direction').innerText = 'Please fill out all fields in the form, including program details, skills, strengths, weaknesses, benefits, career paths, and a conclusion, to modify the program.';
+            
+            document.getElementById('program-Name').value = data.name;
+            document.getElementById('program-degree').value = data.degree;
+            document.getElementById('program-miniDescription').value = data.miniDescription;
+            document.getElementById('program-overview').value = data.overview;
+            document.getElementById('program-categories').value = data.categories.join(',');
+            document.getElementById('program-Skills').value = data.skills.join(',');
+            document.getElementById('program-Strengths').value = data.strengths.join(',');
+            document.getElementById('program-Weaknesses').value = data.weaknesses.join(',');
+            document.getElementById('program-Benefits').value = data.benefits.join(',');
+            document.getElementById('program-Career_Paths').value = data.career_paths.join(',');
+            document.getElementById('program-Conclusion').value = data.conclusion;
 
-        document.getElementById('program-image').value = ''; // Do not pre-fill the file input for edit
-        delete document.getElementById('question-form').dataset.programId
-    }
+            // Do not pre-fill file inputs
+            document.getElementById('program-image').value = '';
+            document.getElementById('program-logo').value = '';
 
-    // Show the form for editing a program
-    function editProgram(programId) {
-        fetch(`/get_program/${programId}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('program-form').style.display = 'block';
-                document.getElementById('form-title').innerText = 'Modify Program Informations';
-                document.getElementById('direction').innerText = 'Please fill out all fields in the form, including program details, skills, strengths, weaknesses, benefits, career paths, and a conclusion, to create a new program.';
-                document.getElementById('program-Name').value = data.name;
-                document.getElementById('program-degree').value = data.degree;
-                document.getElementById('program-miniDescription').value = data.miniDescription;
-                document.getElementById('program-overview').value = data.overview;
-                document.getElementById('program-categories').value = data.categories.join(',');
-                document.getElementById('program-Skills').value = data.skills.join(',');
-                document.getElementById('program-Strengths').value = data.strengths.join(',');
-                document.getElementById('program-Weaknesses').value = data.weaknesses.join(',');
-                document.getElementById('program-Benefits').value = data.benefits.join(',');
-                document.getElementById('program-Career_Paths').value = data.career_paths.join(',');
-                document.getElementById('program-Conclusion').value = data.conclusion;
-                document.getElementById('program-image').value = ''; // Do not pre-fill the file input for edit
+            // Store the program ID for later use
+            document.getElementById('program-form').dataset.programId = programId;
+        });
+}
 
-                // Store the program ID for later use
-                document.getElementById('program-form').dataset.programId = programId;
-            });
-    }
-
-    // Save the program (add or edit)
-    function saveProgram() {
-        const programId = document.getElementById('program-form').dataset.programId;
-        const programName = document.getElementById('program-Name').value;
-        const degree = document.getElementById('program-degree').value;
-        const miniDescription = document.getElementById('program-miniDescription').value;
-        const overview = document.getElementById('program-overview').value;
-        const skills = document.getElementById('program-Skills').value.split(',').map(category => category.trim());
-        const strengths = document.getElementById('program-Strengths').value.split(',').map(category => category.trim());
-        const weaknesses = document.getElementById('program-Weaknesses').value.split(',').map(category => category.trim());
-        const categories = document.getElementById('program-categories').value.split(',').map(category => category.trim());
-        const benefits = document.getElementById('program-Benefits').value.split('.,').map(category => category.trim());
-        const career_paths = document.getElementById('program-Career_Paths').value.split('.,').map(category => category.trim());
-        const conclusion = document.getElementById('program-Conclusion').value;
-        const imageFile = document.getElementById('program-image').files[0]; 
+// Save the program (add or edit)
+function saveProgram() {
+    const programId = document.getElementById('program-form').dataset.programId;
+    const programName = document.getElementById('program-Name').value;
+    const degree = document.getElementById('program-degree').value;
+    const miniDescription = document.getElementById('program-miniDescription').value;
+    const overview = document.getElementById('program-overview').value;
+    const skills = document.getElementById('program-Skills').value.split(',').map(category => category.trim());
+    const strengths = document.getElementById('program-Strengths').value.split(',').map(category => category.trim());
+    const weaknesses = document.getElementById('program-Weaknesses').value.split(',').map(category => category.trim());
+    const categories = document.getElementById('program-categories').value.split(',').map(category => category.trim());
+    const benefits = document.getElementById('program-Benefits').value.split('.,').map(category => category.trim());
+    const career_paths = document.getElementById('program-Career_Paths').value.split('.,').map(category => category.trim());
+    const conclusion = document.getElementById('program-Conclusion').value;
+    const imageFile = document.getElementById('program-image').files[0]; 
+    const logoFile = document.getElementById('program-logo').files[0]; 
 
     // Create a new FormData object and append the values
     const formData = new FormData();
@@ -232,13 +247,14 @@
     formData.append('miniDescription', miniDescription);
     formData.append('overview', overview);
     formData.append('categories', JSON.stringify(categories)); // Send as JSON string
-    formData.append('skills', JSON.stringify(skills))
-    formData.append('strengths', JSON.stringify(strengths))
-    formData.append('weaknesses', JSON.stringify(weaknesses))
-    formData.append('benefits', JSON.stringify(benefits))
-    formData.append('career_paths', JSON.stringify(career_paths))
-    formData.append('conclusion', JSON.stringify(conclusion))
-    formData.append('image', imageFile); // The selected file
+    formData.append('skills', JSON.stringify(skills));
+    formData.append('strengths', JSON.stringify(strengths));
+    formData.append('weaknesses', JSON.stringify(weaknesses));
+    formData.append('benefits', JSON.stringify(benefits));
+    formData.append('career_paths', JSON.stringify(career_paths));
+    formData.append('conclusion', JSON.stringify(conclusion));
+    formData.append('image', imageFile); // Program image file
+    formData.append('logo', logoFile); // Logo image file
 
     // Set the URL and method depending on whether we're adding or updating
     const url = programId ? `/update_program/${programId}` : '/add_program';
@@ -260,7 +276,6 @@
         alert('An error occurred while saving the program.');
     });
 }
-
 
     // Delete a program
 function deleteProgram(programId) {

@@ -48,6 +48,12 @@ UPLOAD_FOLDER = 'static/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
+UPLOAD_FOLDER_CSV = 'uploads/csv'  # For storing uploaded CSV files
+UPLOAD_FOLDER_MODEL = 'uploads/models'  # For storing trained models
+
+os.makedirs(UPLOAD_FOLDER_CSV, exist_ok=True)
+os.makedirs(UPLOAD_FOLDER_MODEL, exist_ok=True)
+
 
 app = Flask(__name__)
 
@@ -60,6 +66,8 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_DEBUG'] = True  # Set to False in production
+app.config['UPLOAD_FOLDER_CSV'] = os.getenv('UPLOAD_FOLDER_CSV')
+app.config['UPLOAD_FOLDER_MODEL'] = os.getenv('UPLOAD_FOLDER_MODEL')
 
 mail = Mail(app)
 
@@ -106,6 +114,24 @@ def admin_dashboard():
 @admin_required
 def admin_reports():
     return render_template('admin/reports.html')
+
+#ROUTE FOR ADMIN UPLOAD 
+@app.route('/admin/upload')
+@admin_required
+def admin_upload():
+    # Fetch data from Firebase Realtime Database
+    ref = db.reference('uploads')  # Reference to the 'uploads' node
+    uploads_data = ref.get()  # Get all the data under 'uploads'
+
+    # If there is data, sort it by date and time (date first, then time)
+    if uploads_data:
+        # Sort by date and time
+        sorted_uploads = sorted(uploads_data.items(), key=lambda x: (x[1]['date'], x[1]['time']), reverse=True)
+        uploads_data = dict(sorted_uploads)  # Rebuild the dictionary with sorted data
+
+    # Pass the sorted data with date and time to the frontend template
+    return render_template('admin/upload.html', uploads=uploads_data)
+
 
 #ROUTE FOR ADMIN SETTINGS
 @app.route('/admin/settings', methods=['GET', 'POST'])
@@ -254,9 +280,29 @@ def page_not_found(e):
 
 #LOADS THE ML MODEL
 def load_model():
-    model_path = "decision_tree_model.pkl"
-    with open(model_path, "rb") as file:
+    # Path to the models folder
+    models_folder = 'uploads/models'
+    
+    # Get the list of files in the models folder
+    model_files = os.listdir(models_folder)
+    
+    # Filter the files to get only the ones with a .pkl extension
+    model_files = [file for file in model_files if file.endswith('.pkl')]
+    
+    # If there are no model files, return an error or default message
+    if not model_files:
+        raise FileNotFoundError("No model file found in the models folder.")
+    
+    # Sort files to get the most recent model (based on modification time)
+    model_files.sort(key=lambda x: os.path.getmtime(os.path.join(models_folder, x)), reverse=True)
+    
+    # Get the path to the most recent model file
+    latest_model_path = os.path.join(models_folder, model_files[0])
+    
+    # Load and return the most recent model
+    with open(latest_model_path, "rb") as file:
         model = pickle.load(file)
+    
     return model
 
 model = load_model()
@@ -283,10 +329,17 @@ def recommender():
 def analysis():
     return render_template('analytics.html')
 
+@app.route('/api/programs', methods=['GET'])
 def get_programs():
-    ref = db.reference('programs')  # Assuming your programs are stored under the 'programs' node
-    programs = ref.get()  # Retrieve all the programs from the database
-    return programs
+    # Fetch programs as JSON from Firebase
+    refs = db.reference('programs')
+    programs = refs.get()
+
+    program_list = [{ "miniDescription": program['miniDescription'], 
+                    "name": program['name'], "image_url": program['image_url'], 
+                    "logo_url": program['logo_url']} for program in programs]
+
+    return jsonify({'programs': program_list})
 
 @app.route('/programs')
 def programs():
@@ -361,7 +414,7 @@ def manage_programs():
 # Route to get a single program for editing
 
 UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -886,307 +939,183 @@ def submit():
 
 
 
+@app.route('/retrain', methods=['GET', 'POST'])
+def retrain():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    if file and file.filename.endswith('.csv'):
+        filepath_csv = os.path.join(app.config['UPLOAD_FOLDER_CSV'], file.filename)
+        file.save(filepath_csv)
+
+        philippine_tz = pytz.timezone('Asia/Manila')
+        now = datetime.now(pytz.utc)
+        now_ph = now.astimezone(philippine_tz)
+        date = datetime.utcnow().strftime('%Y-%m-%d')
+        time = now_ph.strftime(' %I:%M:%S %p')
+        
+        ref = db.reference('uploads')
+        new_entry = ref.push({
+            'file_path': file.filename,
+            'date': date,
+            'time': time
+        })
+
+        df = pd.read_csv(filepath_csv)
+        df.drop('Timestamp', axis=1, inplace=True)
+        df.drop('Would you like your future college program to be related to your current track/strand?', axis=1, inplace=True)
+        df.drop('Which university are you planning to attend for college? (If college student, please enter your current university)', axis=1, inplace=True)
+
+        df['specialized_subj'] = df['In which specialized subject do you have the highest grade?'].combine_first(df['In which specialized subject do you have the highest grade?.1']).combine_first(df['In which specialized subject do you have the highest grade?.2'])
+        df = df.drop(columns=['In which specialized subject do you have the highest grade?', 'In which specialized subject do you have the highest grade?.1', 'In which specialized subject do you have the highest grade?.2'])
+
+        cols = df.columns.tolist()
+        cols.insert(cols.index('Which track/strand are you part of?') + 1, cols.pop(cols.index('specialized_subj')))
+        df = df[cols]
+
+        df.fillna("Not Applicable", inplace=True)
+        df.columns = ['sex', 'income', 'personality', 'strand', 'specialized_subj', 'specialization', 'core_subj', 'p_skill', 's_skill', 'interests1', 'interests2', 'interests3', 'interests4', 'program']
+
+        def clean_columns(df, columns):
+            for column in columns:
+                df[column] = df[column].str.replace(r'\s*\(.*?\)\s*', '', regex=True)
+            return df
+
+        def strip_columns(df, columns):
+            for column in columns:
+                df[column] = df[column].str.strip()
+            return df
+
+        columns_to_clean = ['personality', 'p_skill', 's_skill']
+        columns_to_strip = ['interests1', 'interests2', 'interests3', 'interests4']
+        df = clean_columns(df, columns_to_clean)
+        df = strip_columns(df, columns_to_strip)
+
+        le = LabelEncoder()
+        df['program_encoded'] = le.fit_transform(df['program'])
+
+        # Save the LabelEncoder
+        label_encoder_path = os.path.join(app.config['UPLOAD_FOLDER_MODEL'], 'label_encoder.pkl')
+        with open(label_encoder_path, 'wb') as f:
+            pickle.dump(le, f)
+
+        # Dynamic mappings
+        columns_to_map = ['sex', 'income', 'personality', 'strand', 'specialized_subj', 'specialization', 'core_subj', 'p_skill', 's_skill', 'interests1', 'interests2', 'interests3', 'interests4']
+        
+        dynamic_mappings = {}
+        for column in columns_to_map:
+            mean_encoded = df.groupby(column)['program_encoded'].mean().round(3).to_dict()
+            dynamic_mappings[column] = mean_encoded
+        
+        mappings_filepath = os.path.join(app.config['UPLOAD_FOLDER_MODEL'], 'mappings.json')
+        with open(mappings_filepath, 'w') as f:
+            json.dump(dynamic_mappings, f)
+
+        df_features = df.drop('program', axis=1)
+        for column, mean_encoded in dynamic_mappings.items():
+            df_features[column] = df_features[column].map(mean_encoded)
+
+        X = df_features.iloc[:, :-1]
+        y = df_features.iloc[:, -1]
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        model = RandomForestClassifier()
+        model.fit(X_train, y_train)
+
+        model_filename = os.path.join(app.config['UPLOAD_FOLDER_MODEL'], 'random_forest_model.pkl')
+        with open(model_filename, "wb") as file:
+            pickle.dump(model, file)
+
+        return jsonify({"success": True, "message": "Model retrained and mappings generated successfully!"}), 200
+    else:
+        return jsonify({"success": False, "message": "Failed"}), 400
+    
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         data = request.json
         print("Received Data:", data)
 
-        user_strand = data.get('strand', None)
+        user_strand = data.get('strand', None).lower()  # Convert to lowercase for consistency
 
-        strand_program_map = {
-            'STEM': [
-                'BS in Accountancy', 
-                'BS in Architecture', 
-                'BS in Civil Engineering', 
-                'BS in Computer Engineering', 
-                'BS in Computer Science',
-                'BS in Electronic Engineering',  # Comma added here
-                'BS in Education', 
-                'BS in Information Technology', 
-                'BS in Mathematics', 
-                'BS in Mechanical Engineering', 
-                'BS in Nursing',
-                'BS in Statistics'
-            ],
-            'ABM': [
-                'BS in Accountancy',
-                'BS in Business Administration', 
-                'BS in Business Marketing', 
-                'BS in Entrepreneur',
-                'BS in Education',
-                'BS in Hospitality Management',
-                'BS in Public Administration',  # Comma added here
-                'BS in Tourism Management'
-            ],
-            'HUMSS': [
-                'AB in Communication', 
-                'AB in Multimedia Arts', 
-                'AB in Political Science',
-                'BA in Sociology',
-                'BS in Criminology',
-                'BS in Education',
-                'BS in Political Science',
-                'AB in Psychology'
-            ],
-            'TVL Track': [
-                'BS in Culinary Arts',
-                'BS in Computer Science',
-                'BS in Information Technology',
-                'BS in Hospitality Management',
-                'BS in Tourism Management'
-            ],
-            'None': [
-                'BS in Accountancy', 
-                'BS in Architecture', 
-                'BS in Civil Engineering', 
-                'BS in Computer Engineering', 
-                'BS in Computer Science',
-                'BS in Electronic Engineering',  # Comma added here
-                'BS in Education', 
-                'BS in Information Technology', 
-                'BS in Mathematics', 
-                'BS in Mechanical Engineering', 
-                'AB in Psychology',  # Comma added here
-                'BS in Nursing',
-                'BS in Statistics',
-                'BS in Accountancy',
-                'BS in Business Administration', 
-                'BS in Business Marketing', 
-                'BS in Entrepreneur',
-                'BS in Hospitality Management',
-                'BS in Public Administration',  # Comma added here
-                'BS in Tourism Management',
-                'AB in Communication', 
-                'AB in Multimedia Arts', 
-                'AB in Political Science',
-                'BA in Sociology',
-                'BS in Criminology',
-                'BS in Political Science',
-                'BS in Culinary Arts',
-            ]
-        }
-        
-        user_data = process_data(data)
+        # Fetch program data dynamically from Firebase
+        programs_ref = db.reference('programs')  # Adjust path to match your Firebase structure
+        programs = programs_ref.get() or []  # Default to empty list if nothing is retrieved
+
+        if not isinstance(programs, list):
+            raise ValueError("Expected a list of programs from Firebase.")
+
+        # Create dynamic strand_program_map
+        strand_program_map = {}
+        for program in programs:  # Iterate directly over the list
+            program_name = program.get('name', '').strip()
+            categories = program.get('categories', [])
+            
+            if program_name and isinstance(categories, list):
+                for category in categories:
+                    category = category.lower().strip()
+                    strand_program_map.setdefault(category, []).append(program_name)
+
+        print("Dynamic strand_program_map:", strand_program_map)
+
+        # Load label encoder and mappings
+        label_encoder_path = os.path.join(app.config['UPLOAD_FOLDER_MODEL'], 'label_encoder.pkl')
+        with open(label_encoder_path, 'rb') as f:
+            label_encoder = pickle.load(f)
+
+        mappings_filepath = os.path.join(app.config['UPLOAD_FOLDER_MODEL'], 'mappings.json')
+        with open(mappings_filepath, 'r') as f:
+            dynamic_mappings = json.load(f)
+
+        # Process user data
+        user_data = process_data(data, dynamic_mappings)
         user_df = pd.DataFrame([user_data])
         user_df = user_df[model.feature_names_in_]
 
+        # Predict probabilities
         proba = model.predict_proba(user_df)[0]
         classes = model.classes_
-        
-        print("Raw probabilities and classes:", list(zip(classes, proba * 100)))
 
+        # Decode the predicted classes
+        decoded_classes = label_encoder.inverse_transform(classes)
+
+        print("Decoded probabilities and classes:", list(zip(decoded_classes, proba * 100)))
+
+        # Filter and return top predictions based on strand
         top_indices = proba.argsort()[::-1]
         filtered_predictions = [
-            (classes[i], proba[i] * 100) for i in top_indices 
-            if classes[i] in strand_program_map.get(user_strand, [])
+            (decoded_classes[i], proba[i] * 100) for i in top_indices
+            if decoded_classes[i] in strand_program_map.get(user_strand, [])
         ]
         top_3_predictions = filtered_predictions[:3]
 
         response = {
             'top_3_predictions': [
                 {'category': pred[0], 'probability': round(pred[1])} for pred in top_3_predictions
-            ]
+            ],
+            'top_3_programs': [pred[0] for pred in top_3_predictions]
         }
-        print("Filtered Top 3 Predictions:", response['top_3_predictions'])
-
         return jsonify(response)
     except Exception as e:
         print(f"Error processing prediction: {e}")
         return jsonify({'error': str(e)}), 500
 
 
-
-
-def process_data(data):
-
-    mappings = {
-    "sex": {
-        "Male": 12.95,
-        "Female": 10.971,
-        'Prefer not to say': 2.5
-    },
-
-    "income": {
-        "Less than 9,100 to 18,200": 11.764,
-        "18,200 to 109,200": 11.606,
-        "109,200 to 182,000 and above": 12.5
-    },
-
-    "personality": {
-        "ISTJ": 11.333,
-        "ISFJ": 16.909,
-        "INFJ": 8.889,
-        "INTJ": 10.5,
-        "ISTP": 22,
-        "ISFP": 9.062,
-        "INFP": 10.167,
-        "INTP": 14.773,
-        "ESTP": 12.125,
-        "ESFP": 0,
-        "ENFP": 8.615,
-        "ENTP": 18,
-        "ESTJ": 9.5,
-        "ESFJ": 14.938,
-        "ENFJ": 12.5,
-        "ENTJ": 10.765,
-        
-    },
-
-    "strand":{
-        "ABM": 8,
-        "STEM": 13.8,
-        "HUMMS": 9.312,
-        "TVL Track": 15.407,
-        "None": 10.526,
-    },
-
-    "specialized_subj": {  # Combined mapping for specialized subjects
-        "Business Math": 6.222, 
-        "Fundamentals of Accounting": 1, 
-        "Business and Management": 2, 
-        "Applied Economics": 7, 
-        "Organization and Management": 12.4, 
-        "Business Finance": 5, 
-        "Business Ethics and Social Responsibility": 5, 
-        "Business Marketing": 9.6, 
-        "Business Enterprise Simulation": 10.167,
-
-        "Calculus": 14.636, 
-        "General Physics": 6, 
-        "General Chemistry": 7.8, 
-        "General Biology": 18.625, 
-        "Research/Capstone Project": 12.692,
-
-        "Philippine Politics and Governance": 11.615, 
-        "Creative Writing / Malikhaing Pagsulat": 16.5, 
-        "Creative Nonfiction: The Literacy Essay": 16,
-        "Disciplines and Ideas in the Social Sciences": 6.455, 
-        "Disciplines and Ideas in the Applied Social Sciences": 11.5, 
-        "Introduction to World Religions and Belief System": 14, 
-        "Trends, Networks and Critical Thinking in the 21st Century Culture": 9.333, 
-        "Community Engagement, Solidarity and Citizenship": 7.833
-    },
-
-    "specialization": {
-        "Cookery": 16.867, 
-        "ICT/CSS": 13.583, 
-        "default": 11.108,
-    },
-
-    "core_subj": {
-        "Oral Communication": 0, 
-        "Reading and Writing Skills": 6.333, 
-        "21st Century Literature from the Philippines and the World": 2, 
-        "Komunikasyon at Pananaliksik sa Wika at Kulturang Pilipino": 0, 
-        "Pagbasa at Pagsusuri ng Iba't ibang Teksto Tungo sa Pananaliksik": 12, 
-        "Introduction to the Philosophy of the Human Person/ Pambungad sa Pilosopiya ng Tao": 5, 
-        "General Mathematics": 19, 
-        "Statistics and Probability": 17, 
-        "Contemporary Philippine Arts from the Regions": 8, 
-        "Earth and Life Science": 16, 
-        "Physical Science": 10, 
-        "Media and Information Literacy": 7.429, 
-        "Personal Delopment/Pansariling Kaunlaran": 12, 
-        "Physical Education and Health": 21
-    },
-
-    "p_skill":{
-        "Technical and Analytical Skills": 15.882,
-        "Creative Skills": 7,
-        "Leadership and Management Skills":16.133,
-        "Communication Skills": 8,
-        "Collaboration and Teamwork": 11.571,
-        "Practical and Hands-On Skills": 13.75,
-        "Business and Entrepreneurial Skills": 9.273,
-        "Languages and Cultural Understanding": 12.444,
-        "Health and Wellness Skills": 14.25,
-        "Digital Literacy": 11.409
-    },
-
-    "s_skill":{
-        "Technical and Analytical Skills": 12.667,
-        "Creative Skills": 6.647,
-        "Leadership and Management Skills":12.455,
-        "Communication Skills": 13.828,
-        "Collaboration and Teamwork": 11.067,
-        "Practical and Hands-On Skills": 14.385,
-        "Business and Entrepreneurial Skills": 10,
-        "Languages and Cultural Understanding": 8,
-        "Health and Wellness Skills": 9.75,
-        "Digital Literacy": 12.263
-    },
-
-    "interests1":{
-        "Talking/Presenting in front of people": 11.947,
-        "Drawing and creating digital designs": 8.613,
-        "Managing a business": 11.031,
-        "Learning things about technology": 14.189,
-        "Physical ang Health Activities": 12.37
-    },
-
-    "interests2":{
-        "Interactive with people": 9.933,
-        "Editing Videos": 6.842,
-        "Organizing large-scale events": 15,
-        "Solving math problems": 13.316,
-        "Taking care of others": 12.5
-    },
-
-    "interests3":{
-        "Performing on stage": 12.609,
-        "Dealing with designs of buildings/infrastructures": 8.167,
-        "Analyzing financial data": 12.86,
-        "Programming": 13.435,
-        "Helping others learn": 11.167
-    },
-
-    "interests4":{
-        "Reading/Writing content": 11.097,
-        "Cooking and presenting dishes": 11.769,
-        "Studying political systems": 9.696,
-        "Dealing with human behavior": 10.905,
-        "Traveling": 14.735
-    }
-
-
-
-}
-    # Convert categorical data to numerical values using mappings
+def process_data(data, mappings):
     processed_data = {}
 
-    # Convert 'sex' to numerical: 0 for Female, 1 for Male
-    processed_data['sex'] = mappings['sex'].get(data['sex'], -1)
-
-    # Convert 'income'
-    processed_data['income'] = mappings['income'].get(data['income'], -1)
-
-    processed_data['personality'] = mappings['personality'].get(data['personality'], -1)
-
-    # Convert 'strand'
-    processed_data['strand'] = mappings['strand'].get(data['strand'], -1)
-
-    # Convert 'specialized_subj'
-    processed_data['specialized_subj'] = mappings['specialized_subj'].get(data['specialized_subj'], -1)
-
-    # Convert 'specialization'
-    processed_data['specialization'] = mappings['specialization'].get(data['specialization'], mappings['specialization']['default'])
-
-    # Convert 'core_subj'
-    processed_data['core_subj'] = mappings['core_subj'].get(data['core_subj'], -1)
-
-    processed_data['p_skill'] = mappings['p_skill'].get(data['p_skill'], -1)
-
-    processed_data['s_skill'] = mappings['s_skill'].get(data['s_skill'], -1)
-
-    processed_data['interests1'] = mappings['interests1'].get(data['interests1'], -1)
-
-    processed_data['interests2'] = mappings['interests2'].get(data['interests2'], -1)
-
-    processed_data['interests3'] = mappings['interests3'].get(data['interests3'], -1)
-
-    processed_data['interests4'] = mappings['interests4'].get(data['interests4'], -1)
-
+    for column, mapping in mappings.items():
+        if column == 'program':
+            processed_data[column] = data.get(column)  # Keep the program as categorical (do not map)
+        else:
+            processed_data[column] = mapping.get(data.get(column), -1)  # Use mean encoding for other columns
 
     return processed_data
 

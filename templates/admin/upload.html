@@ -1,0 +1,99 @@
+{% extends '/admin/sidebar.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV for Retraining</title>
+</head>
+<body>
+    <link rel="stylesheet" href="/static/css/upload.css">
+
+    <div class = "upload-back">
+        <div class = "upload-container">
+
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File Uploaded</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                </table>
+                
+                <div class="body-scrollable">
+                    <table>
+                        <tbody>
+                            {% if uploads %}
+                                {% for key, upload in uploads.items() %}
+                                    <tr>
+                                        <td>{{ upload['file_path'] }}</td>
+                                        <td>{{ upload['date'] }}</td>
+                                        <td>{{ upload['time'] }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3">No uploads available.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+            <div>
+                <h1>Upload CSV File to Retrain Model</h1>
+            <form id="retrain-form" action="/retrain" method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="file-input-container">
+                    <input type="file" id="file" name="file" accept=".csv" required class="file-input">
+                </div>
+                <button type="submit" class="submit-button">Upload and Retrain</button>
+            </form>
+            </div>
+
+        
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('retrain-form').addEventListener('submit', handleFormSubmit);
+
+async function handleFormSubmit(event) {
+    event.preventDefault();  // Prevent the form from submitting traditionally
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+        // Send the form data to the server
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData
+        });
+
+        // Ensure the response is valid
+        if (!response.ok) {
+            throw new Error('Failed to retrain the model');
+        }
+
+        // Parse the server response
+        const result = await response.json();
+        alert(result.message);  // Show the alert with the server message
+
+        // If successful, reload the page
+        if (result.success) {
+            location.reload();  // Reload the current page
+        }
+    } catch (error) {
+        alert('An error occurred: ' + error.message);
+    }
+}
+    </script>
+    
+</body>
+</html>
+
+{% endblock %}

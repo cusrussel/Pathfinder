@@ -80,17 +80,17 @@
         <div class  = "r-result-programs">
           <div class = "r-result-programs-container-two">
             <img src="/static/images/recommender/top-two.svg" alt="">
-            <p id = "top-two" onclick="two()" ></p>
+            <p id = "top-two"></p>
           </div>
 
           <div class = "r-result-programs-container-one">
             <img src="/static/images/recommender/top-one.svg" alt="">
-            <p id = "top-one" onclick="one()"></p>
+            <p id = "top-one"></p>
           </div>
 
           <div class = "r-result-programs-container-three">
             <img src="/static/images/recommender/top-three.svg" alt="">
-            <p id = "top-three" onclick="three()"></p>
+            <p id = "top-three"></p>
           </div>
         
         </div>
@@ -102,7 +102,7 @@
       <div class = "r-result-left-buttons">
         <button onclick = "hideContentAgain()" >Take again<img src="/static/images/recommender/retry.svg" alt=""> </button>
         <button onclick = "toggleEmail()"> Send a copy<img src="/static/images/recommender/send.svg" alt=""></button>
-        <button onclick = "getHref()" >More info<img src="/static/images/recommender/info.svg" alt=""> </button>
+        <button id = "program-link" >More info<img src="/static/images/recommender/info.svg" alt=""> </button>
       </div>
     </div>
     <div class = "r-result-right">
@@ -130,4 +130,281 @@
 
 
 <h1 id="total-questions" data-total="{{ total_questions }}"></h1>
+
+<script>
+  function toggleEmail() {
+  const emailContainer = document.getElementById('float-email');
+  
+  if (emailContainer.style.display === "none" || !emailContainer.style.display) {
+    emailContainer.style.display = "flex";
+    emailContainer.classList.add("show");
+    emailContainer.classList.remove("hidden");
+  } else {
+    emailContainer.style.display = "none";
+    emailContainer.classList.add("hidden");
+    emailContainer.classList.remove("show");
+  }
+}
+
+function resetQuestions() {
+  currentQuestion = 1;
+
+  const allQuestions = document.querySelectorAll('[id^="question-"]');
+  allQuestions.forEach((question) => {
+      question.classList.add('hidden');
+  });
+
+  const firstQuestion = document.getElementById('question-1');
+  if (firstQuestion) {
+      firstQuestion.classList.remove('hidden');
+  }
+
+  updateNextButtonState();
+}
+
+function hideContentAgain(){
+  document.getElementById('r-result').classList.remove("show");
+    document.getElementById('r-content').classList.remove("show");
+
+    const secondaryButtons = document.querySelectorAll('#question-17 .r-buttons button');
+  secondaryButtons.forEach(button => {
+    button.disabled = false; 
+    button.style.opacity = 1; 
+  });
+
+    begin();
+    resetQuestions();
+}
+
+let onepred, twopred, threepred;
+
+// Function to display the prediction result
+function displayPrediction(result) {
+  let predictions = result.top_3_predictions;  // Array of top 3 predictions
+
+  let predictionTextElement = document.getElementById('top-one');
+  let predictionTopTwo = document.getElementById('top-two');
+  let predictionTopThree = document.getElementById('top-three');
+  let predictionImageOneElement = document.getElementById('result-image-one');
+  let predictionImageTwoElement = document.getElementById('result-image-two');
+  let predictionInfoElement = document.getElementById('result-info');
+  let predictionLinkElement = document.getElementById('program-link'); 
+
+  console.log("predictionTextElement:", predictionTextElement);
+  console.log("predictionTopTwo:", predictionTopTwo);
+  console.log("predictionTopThree:", predictionTopThree);
+
+  // Declare predictionsMap outside of the fetch to make it globally accessible
+  let predictionsMap = {};
+fetch('/api/programs')
+  .then(response => response.json())
+  .then(data => {
+    const programs = data.programs;
+
+    if (programs && programs.length > 0) {
+      programs.forEach(program => {
+        predictionsMap[program.name] = {
+          text: program.name,
+          imageOne: program.image_url,
+          imageTwo: program.logo_url,
+          info: program.miniDescription,
+          href: program.name
+        };
+      });
+
+      if (predictions && predictions.length > 0) {
+        const topPrediction = predictions[0]?.category;
+        const secondPrediction = predictions[1]?.category;
+        const thirdPrediction = predictions[2]?.category;
+
+        onepred = topPrediction;
+        twopred = secondPrediction;
+        threepred = thirdPrediction;
+
+        predictionTextElement.innerText = predictionsMap[topPrediction]?.text || "No predictions available";
+        predictionTopTwo.innerText = predictionsMap[secondPrediction]?.text || "";
+        predictionTopThree.innerText = predictionsMap[thirdPrediction]?.text || "";
+
+        predictionTopTwo.onclick = () => handlePredictionClick(secondPrediction, predictionTopTwo);
+        predictionTopThree.onclick = () => handlePredictionClick(thirdPrediction, predictionTopThree);
+        predictionTextElement.onclick = () => handlePredictionClick(topPrediction, predictionTextElement);
+
+        predictionTextElement.click(); 
+      } else {
+        predictionTextElement.innerText = "No predictions available";
+        predictionInfoElement.innerText = "";
+        predictionImageOneElement.style.display = 'none';
+        predictionImageTwoElement.style.display = 'none';
+      }
+    }
+  })
+  .catch(error => {
+    console.error('Error fetching programs:', error);
+  });
+
+
+
+  function handlePredictionClick(predictionCategory, element) {
+  console.log(`${element.id} clicked!`); // Log the ID of the clicked element
+  updateProgramDetails(predictionCategory); // Update the program details
+  handleActiveClass(element); // Add active class
+  }
+
+  // Function to handle the active class
+  function handleActiveClass(element) {
+  let allPredictionElements = [predictionTextElement, predictionTopTwo, predictionTopThree];
+
+  console.log("Elements before removing class:", allPredictionElements);
+  allPredictionElements.forEach(el => {
+    console.log("Removing active class from:", el);
+    el?.classList.remove('r-result-programs-active');
+  });
+
+  if (element) {
+    console.log("Adding active class to:", element);
+    element.classList.add('r-result-programs-active');
+  }
+}
+
+  // Function to update the program details dynamically
+  function updateProgramDetails(predictionCategory) {
+    let predictionData = predictionsMap[predictionCategory];
+    if (predictionData) {
+      // Update the information displayed in the UI
+      predictionInfoElement.innerText = predictionData.info || "No additional information available.";
+
+      if (predictionData.imageOne && predictionData.imageTwo) {
+        predictionImageOneElement.src = predictionData.imageOne;
+        predictionImageOneElement.style.display = 'block';
+        predictionImageTwoElement.src = predictionData.imageTwo;
+        predictionImageTwoElement.style.display = 'block';
+      } else {
+        predictionImageOneElement.style.display = 'none';
+        predictionImageTwoElement.style.display = 'none';
+      }
+
+      // Update the href link element and make it clickable
+      if (predictionData.href) {
+        console.log("Setting href for prediction:", predictionData.href);
+        
+        // Set the link text to "More Info"
+        
+        // Construct the link
+        let links = "/programs/" + encodeURIComponent(predictionData.href);
+        console.log("Setting href for links:", links);
+        
+        // Attach the onclick handler to open the link in a new tab
+        predictionLinkElement.onclick = () => window.open(links, '_blank');
+        
+        // Make the link visible
+        predictionLinkElement.style.display = 'inline-block';
+      } else {
+        // Hide the element if no href
+        predictionLinkElement.style.display = 'none';
+      }
+    } else {
+      // Default for unknown predictions
+      predictionInfoElement.innerText = "No additional information available.";
+      predictionImageOneElement.style.display = 'none';
+      predictionImageTwoElement.style.display = 'none';
+      predictionLinkElement.style.display = 'none';
+    }
+  }
+}
+
+
+// Example of usage:
+// You can call the displayPrediction function with the result object containing top_3_predictions
+// displayPrediction(result);
+
+
+// Convert FormData to a plain object
+function formDataToObject(formData) {
+    const obj = {};
+    formData.forEach((value, key) => {
+        obj[key] = value;
+    });
+    return obj;
+}
+
+async function submitForm() {
+    console.log("Submitting form data:", formData);  // Log formData before processing
+
+    let personality = '';
+
+    // Loop through formData and combine the stage values
+    if (formData instanceof FormData) {
+        // If formData is FormData, use .entries()
+        for (let [key, value] of formData.entries()) {
+            if (key.includes('state')) {
+                personality += String(value); // Concatenate the values for stages
+            }
+        }
+    } else {
+        // If formData is a plain object, use Object.entries()
+        for (let [key, value] of Object.entries(formData)) {
+            if (key.includes('state')) {
+                personality += String(value); // Concatenate the values for stages
+            }
+        }
+    }
+
+    // Add the combined stages back into formData
+    formData['personality'] = personality;
+
+    // Convert FormData to plain object if needed
+    const plainFormData = formData instanceof FormData ? formDataToObject(formData) : formData;
+
+    // Ensure updated data is sent as JSON
+    console.log("Updated formData as object:", plainFormData); // Log updated formData
+
+    try {
+        // First request to /predict
+        const response = await fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData) // Send as JSON object
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            displayPrediction(result); // Display prediction result
+
+            formData['output_1'] = result.top_3_predictions[0]?.category || "No prediction";
+            formData['output_2'] = result.top_3_predictions[1]?.category || "No prediction";
+            formData['output_3'] = result.top_3_predictions[2]?.category || "No prediction";
+
+            console.log("Updated formData:", formData);
+
+            // Convert the updated formData to plain object
+            const updatedFormData = formData instanceof FormData ? formDataToObject(formData) : formData;
+
+            // Send updated data to /submit
+            const submitResponse = await fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedFormData) // Send the updated formData as JSON object
+            });
+
+            if (submitResponse.ok) {
+                const submitData = await submitResponse.json(); // Assuming response is in JSON format
+                console.log('Success from /submit:', submitData);
+            } else {
+                const errorData = await submitResponse.text();
+                console.error('Error in /submit response:', submitResponse.statusText, errorData);
+            }
+        } else {
+            const errorData = await response.text();
+            console.error("Error in /predict response:", response.statusText, errorData);
+        }
+    } catch (error) {
+        console.error("Error during fetch:", error);
+    }
+}
+
+</script>
 {% endblock %}

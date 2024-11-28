@@ -1,0 +1,148 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root{
+    --white: #FFFFFF;
+    --black: #000000;
+    --darkpurple: #230b41;
+    --semidarkpurple: #523762; 
+    --lightpurple: #ae9fcf;
+    --pink: #ffd4e1;
+    --peach: #F8D5C6;
+    --teal: #A0D6D3;
+    --red: #CF3535;
+    --green: #28a745;
+  }
+
+body{
+    background-image: url(/static/home/background.svg);
+    background-size: 100%;
+    background-repeat: repeat;
+}
+
+.upload-back{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.upload-container{
+    border-radius: 15px;
+    background-color: var(--white);
+    width: 70%;
+    height: 60vh;
+    display: flex;  
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    outline: 5px solid var(--darkpurple);
+    gap: 30px;
+}
+
+.upload-form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* File input container */
+.file-input-container {
+    margin-bottom: 15px;
+}
+
+/* File input styling */
+.file-input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Hover effect on the file input */
+.file-input:hover {
+    border-color: #888;
+}
+
+/* Submit button styling */
+.submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Submit button hover effect */
+.submit-button:hover {
+    background-color: #45a049;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    width: 170px; /* Set a fixed width for each column */
+}
+
+thead {
+    background-color: #f4f4f4; /* Optional: add background to header */
+}
+
+.body-scrollable {
+    max-height: 200px; /* Adjust the height as needed */
+    overflow-y: auto;
+    display: block; /* Ensures the div takes up block space */
+}
+
+.body-scrollable::-webkit-scrollbar {
+    width: 3px; /* Set the width of the scrollbar */
+}
+
+.body-scrollable::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Background of the track */
+}
+
+.body-scrollable::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the scroll thumb */
+    border-radius: 10px; /* Rounded corners of the scrollbar */
+}
+
+.body-scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darker color when hovering over the thumb */
+}
+
+
+th {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+}
