@@ -464,13 +464,30 @@ def add_program():
     print("Form data:", data)
     
     program_name = data['name']
+    miniDescription = data['miniDescription']
+    degree = data['degree']
+    overview = data['overview']
     categories = json.loads(data['categories'])  # Convert the string to a list
     image = request.files.get('image')  # Get the uploaded image file
+    logo = request.files.get('logo')  # Get the uploaded logo file
+    skills = json.loads(data['skills'])
+    strengths = json.loads(data['strengths'])
+    weaknesses = json.loads(data['weaknesses'])
+    benefits = json.loads(data['benefits'])
+    career_paths = json.loads(data['career_paths'])
+    conclusion = data['conclusion']
 
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
         image.save(os.path.join(UPLOAD_FOLDER, filename))  # Save the image to the static folder
         image_url = f'uploads/{filename}'  # Store the relative path
+
+        # Handle the logo upload (if any)
+        logo_url = None
+        if logo and allowed_file(logo.filename):
+            logo_filename = secure_filename(logo.filename)
+            logo.save(os.path.join(UPLOAD_FOLDER, logo_filename))
+            logo_url = f'uploads/{logo_filename}'  # Store the relative path to the logo
 
         # References
         program_ref = db.reference('programs')  # Reference to the programs node
@@ -490,8 +507,18 @@ def add_program():
         new_program = {
             'program_id': new_index,
             'name': program_name,
+            'miniDescription': miniDescription,
+            'degree': degree,
+            'overview': overview,
             'categories': categories,
-            'image_url': image_url  # Store the relative image URL
+            'skills': skills,
+            'strengths': strengths,
+            'weaknesses': weaknesses,
+            'benefits': benefits,
+            'career_paths': career_paths,
+            'conclusion': conclusion,
+            'image_url': image_url,  # Store the relative image URL
+            'logo_url': logo_url  # Store the relative logo URL
         }
 
         # Append the new program to the list
@@ -520,6 +547,7 @@ def update_program(program_id):
     overview = data['overview']
     categories = json.loads(data['categories'])  # Convert the string to a list
     image = request.files.get('image')  # Get the uploaded image file (optional)
+    logo = request.files.get('logo')  # Get the uploaded logo file (optional)
     skills = json.loads(data['skills'])
     strengths = json.loads(data['strengths'])
     weaknesses = json.loads(data['weaknesses'])
@@ -538,8 +566,15 @@ def update_program(program_id):
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
         image.save(os.path.join(UPLOAD_FOLDER, filename))
-        image_url = f'uploads/{filename}'
+        image_url = f'/static/uploads/{filename}'
         program['image_url'] = image_url  # Update the image URL in the database
+
+    # Handle the logo upload (if any)
+    if logo and allowed_file(logo.filename):
+        logo_filename = secure_filename(logo.filename)
+        logo.save(os.path.join(UPLOAD_FOLDER, logo_filename))
+        logo_url = f'/static/uploads/{logo_filename}'  # Store the relative path to the logo
+        program['logo_url'] = logo_url  # Update the logo URL in the database
 
     # Update other fields
     program['name'] = program_name
