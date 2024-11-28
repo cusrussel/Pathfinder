@@ -431,7 +431,7 @@ def manage_programs():
     programs = ref.get()  # This will return a list of programs
     
     # If the structure is a dictionary, loop through it and format it into a list
-    program_list = [{"program_id": idx, "name": program['name'], "degree":program['degree'], "miniDescription": program['miniDescription'], "overview": program['overview'], "skills": program['skills'], "strengths": program['strengths'], "weaknesses": program['weaknesses'], "category": program['categories'], "image_url": program['image_url'], "benefits": program['benefits'], "career_paths": program["career_paths"], "conclusion": program["conclusion"]} 
+    program_list = [{"program_id": idx, "name": program['name'], "degree":program['degree'], "miniDescription": program['miniDescription'], "overview": program['overview'], "skills": program['skills'], "strengths": program['strengths'], "weaknesses": program['weaknesses'], "category": program['categories'], "image_url": program['image_url'], "logo_url": program['logo_url'], "benefits": program['benefits'], "career_paths": program["career_paths"], "conclusion": program["conclusion"]} 
                     for idx, program in enumerate(programs)]
     
     return render_template('/admin/manage-programs.html', programs=program_list)
