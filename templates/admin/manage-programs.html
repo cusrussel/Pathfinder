@@ -19,7 +19,7 @@
                 {% for program in programs %}
                     <tr id="program-{{ program['program_id'] }}">
                         <td>
-                            <a href="{{ url_for('program_details', program_name=program['name']) }}" target="_blank">
+                            <a style = "color: #230b41;" href="{{ url_for('program_details', program_name=program['name']) }}" target="_blank">
                                 <h2 class = "program-name">{{ program['name'] }}</h2>
                             </a>
                         </td>
