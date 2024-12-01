@@ -45,7 +45,9 @@
             <div class = "four-content">
                 <h1>UPLOAD</h1>
                 <p>Upload CVS file to retrain the model</p>
-                <button>UPLOAD</button>
+                <a href="{{ url_for('admin_uploads')}}">
+                    <button>UPLOAD</button>
+                </a>
             </div>
             <div class = "four-content-img">
                 <img src="/static/images/admin/upload-tr.svg" alt="">
