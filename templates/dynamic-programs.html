@@ -48,9 +48,10 @@
                     <div class="explore-line"></div>
                     <br>
                     <p>Pursuing <b>{{program['degree']}} in {{ program['name'] }}</b> offers several benefits:</p>
+                    <br>
                     <ul>
                         {% for benefit in program['benefits'] %} <!-- Loop through benefits (list) -->
-                            <li>
+                            <li style = "text-align: start;">
                                 {% if ':' in benefit %}
                                     <b>{{ benefit.split(':')[0] }}:</b>{{ benefit.split(':')[1] }}{% if benefit.endswith('.') %}<br><br>{% endif %}
                                 {% else %}
@@ -66,9 +67,10 @@
                     <div class="explore-line"></div>
                     <br>
                     <p>Graduates with a <b>{{program['degree']}} in {{ program['name'] }}</b> can pursue various roles, including but not limited to: </p>
+                    <br>
                     <ul>
                         {% for career_path in program['career_paths'] %} <!-- Loop through career paths (list) -->
-                            <li>
+                            <li style = "text-align: start;">
                                 {% if ':' in career_path %}
                                     <b>{{ career_path.split(':')[0] }}:</b>{{ career_path.split(':')[1] }}{% if career_path.endswith('.') %}<br><br>{% endif %}
                                 {% else %}

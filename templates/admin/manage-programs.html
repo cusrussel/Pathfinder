@@ -11,7 +11,6 @@
                 <tr>
                     <th>Program Name</th>
                     <th>Image</th>
-                    <th>Logo</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -28,9 +27,6 @@
                             <img src="{{ program['image_url'] }}" alt="{{ program['name'] }} logo" style="width: 100px;">
                         </td>
                         <td>
-                            <img src="{{ program['logo_url'] }}" alt="{{ program['name'] }} logo" style="width: 100px;">
-                        </td>
-                        <td>
                             <button class="edit-button" onclick="editProgram('{{ program['program_id'] }}')">Edit</button>
                             <button class="delete-button" onclick="deleteProgram('{{ program['program_id'] }}')">Delete</button>
                         </td>
@@ -39,22 +35,6 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Form for adding/editing a program
-    <div id="program-form" style="display:none;" enctype="multipart/form-data">
-        <h2 id="form-title">Add Program</h2>
-        <label for="program-name">Program Name:</label>
-        <input type="text" id="program-name" required><br>
-
-        <label for="program-categories">Categories (comma separated):</label>
-        <input type="text" id="program-categories" required><br>
-
-        <label for="program-image">Image:</label>
-        <input type="file" id="program-image" required><br>
-
-        <button onclick="saveProgram()">Save</button>
-        <button onclick="closeForm()">Cancel</button>
-    </div> -->
 
     <div id="overlay"></div>
 
