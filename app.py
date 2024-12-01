@@ -322,7 +322,7 @@ def load_model():
     model_files.sort(key=lambda x: os.path.getmtime(os.path.join(models_folder, x)), reverse=True)
     
     # Get the path to the most recent model file
-    latest_model_path = os.path.join(models_folder, model_files[2])
+    latest_model_path = os.path.join(models_folder, model_files[1])
     
     # Load and return the most recent model
     with open(latest_model_path, "rb") as file:
