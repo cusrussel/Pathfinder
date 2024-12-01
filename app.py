@@ -1150,10 +1150,14 @@ def predict():
 
         # Filter and return top predictions based on strand
         top_indices = proba.argsort()[::-1]
-        filtered_predictions = [
-            (decoded_classes[i], proba[i] * 100) for i in top_indices
-            if decoded_classes[i] in strand_program_map.get(user_strand, [])
-        ]
+        if user_strand is None or user_strand.lower() == 'none':  # Include all programs if no strand is specified
+            filtered_predictions = [(decoded_classes[i], proba[i] * 100) for i in top_indices]
+        else:  # Filter predictions based on the user's strand
+            user_strand = user_strand.lower()
+            filtered_predictions = [
+                (decoded_classes[i], proba[i] * 100) for i in top_indices
+                if decoded_classes[i] in strand_program_map.get(user_strand, [])
+            ]
         top_3_predictions = filtered_predictions[:3]
 
         response = {
