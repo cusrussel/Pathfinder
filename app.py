@@ -332,7 +332,6 @@ def load_model():
 
 model = load_model()
 
-print( model.feature_names_in_)
 
 @app.route('/')
 def home():
