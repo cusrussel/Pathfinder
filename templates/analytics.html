@@ -76,7 +76,7 @@
                             <h2>TVL </h2>
                             <div class = "summary-container">
                                 <div class = "summary-bg">
-                                    <h2 id = "TVL Track">0 </h2><span>%</span>
+                                    <h2 id = "TVL">0 </h2><span>%</span>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                         <option value="STEM">STEM</option>
                         <option value="ABM">ABM</option>
                         <option value="HUMSS">HUMSS</option>
-                        <option value="TVL Track">TVL</option>
+                        <option value="TVL">TVL</option>
                         <option value="None">No Strand</option>
                     </select>
                     </div>
@@ -134,7 +134,7 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
     fetch('/api/strand') // Adjust the endpoint as necessary
     .then(response => response.json())
     .then(data => {
-        const strands = ['STEM', 'ABM', 'HUMSS', 'TVL Track']; // List of strands to include
+        const strands = ['STEM', 'ABM', 'HUMSS', 'TVL']; // List of strands to include
         let totalCount = 0; // Initialize the total count
 
         // Iterate through the strand data

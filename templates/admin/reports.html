@@ -77,7 +77,7 @@
                         <h2>TVL </h2>
                         <div class = "summary-container">
                             <div class = "summary-bg">
-                                <h2 id = "TVL Track">0 </h2><span>%</span>
+                                <h2 id = "TVL">0 </h2><span>%</span>
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                     <option value="STEM">STEM</option>
                     <option value="ABM">ABM</option>
                     <option value="HUMSS">HUMSS</option>
-                    <option value="TVL Track">TVL</option>
+                    <option value="TVL">TVL</option>
                     <option value="None">No Strand</option>
                 </select>
                 </div>
@@ -231,7 +231,7 @@
         
                     <!-- TVL TRACK data -->
                     <tr>
-                        <td class = "td-first">TVL TRACK</td>
+                        <td class = "td-first">TVL</td>
                         <td colspan="2">
                             <div id="strand-tvl-track"></div>
                         </td>
@@ -276,9 +276,9 @@
         
                     <!-- TVL TRACK data -->
                     <tr>
-                        <td>TVL TRACK</td>
+                        <td>TVL</td>
                         <td colspan="2">
-                            <div id="percentages-tvl-track">Loading TVL TRACK data...</div>
+                            <div id="percentages-tvl-track">Loading TVL data...</div>
                         </td>
                     </tr>
         
@@ -323,7 +323,7 @@ fetch('/api/user_count') // Adjust the endpoint as necessary
     fetch('/api/strand') // Adjust the endpoint as necessary
     .then(response => response.json())
     .then(data => {
-        const strands = ['STEM', 'ABM', 'HUMSS', 'TVL Track']; // List of strands to include
+        const strands = ['STEM', 'ABM', 'HUMSS', 'TVL']; // List of strands to include
         let totalCount = 0; // Initialize the total count
 
         // Iterate through the strand data
@@ -562,7 +562,7 @@ function filterGraph() {
 
 
 // List of strands
-const strands = ['STEM', 'ABM', 'HUMSS', 'TVL TRACK', 'None'];
+const strands = ['STEM', 'ABM', 'HUMSS', 'TVL', 'None'];
 
 // Fetch and display data for each strand
 strands.forEach(strand => {
@@ -587,8 +587,8 @@ strands.forEach(strand => {
                 for (const [program, percentage] of Object.entries(data)) {
                     tableHTML += `
                         <tr>
-                            <td>${program}</td>
-                            <center><td>${percentage}%</td> </center>
+                            <td style="width: 70%;">${program}</td>
+                            <center><td style="width: 30%;">${percentage}%</td> </center>
                         </tr>
                     `;
                 }
@@ -611,7 +611,7 @@ strands.forEach(strand => {
 });
 
 
-const strand = ['STEM', 'ABM', 'HUMSS', 'TVL TRACK', 'None'];
+const strand = ['STEM', 'ABM', 'HUMSS', 'TVL', 'None'];
 // Fetch and display overall strand percentage data
 fetch('/api/strandPercentage')
     .then(response => response.json())
