@@ -312,20 +312,20 @@ def load_model():
     model_files = os.listdir(models_folder)
     
     # Filter the files to get only the ones with a .pkl extension
-    model_files = [file for file in model_files if file.endswith('.pkl')]
+    model_files = [file for file in model_files if file.endswith('random_forest_model.pkl')]
     
     # If there are no model files, return an error or default message
     if not model_files:
         raise FileNotFoundError("No model file found in the models folder.")
     
-    # Sort files to get the most recent model (based on modification time)
-    model_files.sort(key=lambda x: os.path.getmtime(os.path.join(models_folder, x)), reverse=True)
+    # # Sort files to get the most recent model (based on modification time)
+    # model_files.sort(key=lambda x: os.path.getmtime(os.path.join(models_folder, x)), reverse=True)
     
-    # Get the path to the most recent model file
-    latest_model_path = os.path.join(models_folder, model_files[1])
+    # # Get the path to the most recent model file
+    # latest_model_path = os.path.join(models_folder, model_files[1])
     
     # Load and return the most recent model
-    with open(latest_model_path, "rb") as file:
+    with open(model_files, "rb") as file:
         model = pickle.load(file)
     
     return model
