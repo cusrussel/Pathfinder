@@ -245,8 +245,8 @@
                 <thead>
                     <tr>
                         <th>Strand</th>
-                        <th>Program</th>
-                        <th>Percentage</th>
+                        <th style="width: 70%;">Program</th>
+                        <th style = "width: 30%;">Percentage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -587,8 +587,8 @@ strands.forEach(strand => {
                 for (const [program, percentage] of Object.entries(data)) {
                     tableHTML += `
                         <tr>
-                            <td style="width: 70%;">${program}</td>
-                            <center><td style="width: 30%;">${percentage}%</td> </center>
+                            <td style="width: 70%; border-left: none; border-top: none; border-bottom: none;">${program}</td>
+                            <center><td style="width: 30%; border-right: none; border-top: none; border-bottom: none;">${percentage}%</td> </center>
                         </tr>
                     `;
                 }
