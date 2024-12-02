@@ -600,7 +600,6 @@ body{
     left: 50%;
     transform: translate(-50%, -50%); /* Center the form on the screen */
     z-index: 1000; /* Ensure it appears on top of other content */
-    overflow-y: auto;
     overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
@@ -632,7 +631,6 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    top: 0;
 }
 
 .program-information h2{
@@ -651,12 +649,11 @@ body{
 .program-information,
 .program-direction {
     position: sticky;
+    top: 0;
     background-color: var(--white);
-    z-index: 1000;
+    z-index: 100;
     padding: 10px 0;
 }
-
-
 
 .program-information div{
     display: flex;
@@ -667,6 +664,7 @@ body{
     overflow-y: auto;
     max-height: calc(98% - 160px); /* Adjust based on the fixed sections' height */
     padding-right: 10px; /* Avoid scrollbar overlap */
+    height: 80%;
 }
 
 .program-direction{
@@ -675,7 +673,6 @@ body{
     color: white;
     padding: 10px;
     border-radius: 10px;
-    top: 30px;
 }
 
 .close-button{
