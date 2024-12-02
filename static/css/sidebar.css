@@ -647,9 +647,24 @@ body{
     padding: 5px;
 }
 
+.program-information,
+.program-direction {
+    position: sticky;
+    top: 0;
+    background-color: var(--white);
+    z-index: 100;
+    padding: 10px 0;
+}
+
 .program-information div{
     display: flex;
     gap: 20px;
+}
+
+.scrollable-content {
+    overflow-y: auto;
+    max-height: calc(98% - 160px); /* Adjust based on the fixed sections' height */
+    padding-right: 10px; /* Avoid scrollbar overlap */
 }
 
 .program-direction{
