@@ -20,7 +20,7 @@
     <div class="program-card-container" id="program-items">
         <div class = "grid-container">
             {% for program in programs %}
-    <div class="item {% if program['category'] %}
+    <div class="item {% if program['category']%}
                     {% for category in program['category'] %}
                         {{ category }}
                     {% endfor %}
@@ -36,5 +36,32 @@
     {% endfor %}
 </div>
     </div>
+    
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // Attach event listener to the filter
+    const filterDropdown = document.getElementById('program-filter');
+    filterDropdown.addEventListener('change', filterItems);
+
+    function filterItems() {
+        const selectedCategory = filterDropdown.value; // Get the selected value
+        const items = document.querySelectorAll('.item'); // Select all program items
+
+        items.forEach(item => {
+            // Check if "all" is selected or if the item's category matches
+            if (selectedCategory === 'all' || item.className.includes(selectedCategory)) {
+                item.style.display = ''; // Show the item
+            } else {
+                item.style.display = 'none'; // Hide the item
+            }
+        });
+    }
+
+    // Trigger the default selection
+    filterItems(); // This will ensure the page shows items based on the default value
+});
+</script>
+
 {% endblock %}
