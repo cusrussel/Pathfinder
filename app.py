@@ -308,28 +308,29 @@ def load_model():
     # Path to the models folder
     models_folder = 'uploads/models'
     
+    # Ensure the folder exists
+    if not os.path.exists(models_folder):
+        raise FileNotFoundError(f"Models folder '{models_folder}' does not exist.")
+    
     # Get the list of files in the models folder
     model_files = os.listdir(models_folder)
     
-    # Filter the files to get only the ones with a .pkl extension
-    model_files = [file for file in model_files if file.endswith('random_forest_model.pkl')]
+    # Filter the files to get only the ones named 'random.pkl'
+    model_files = [file for file in model_files if file == 'random_forest_model.pkl']
     
-    # If there are no model files, return an error or default message
+    # If there are no matching model files, raise an error
     if not model_files:
-        raise FileNotFoundError("No model file found in the models folder.")
+        raise FileNotFoundError("No 'random_forest_model.pkl' file found in the models folder.")
     
-    # # Sort files to get the most recent model (based on modification time)
-    # model_files.sort(key=lambda x: os.path.getmtime(os.path.join(models_folder, x)), reverse=True)
+    # Get the full path of the 'random.pkl' file
+    model_path = os.path.join(models_folder, model_files[0])
     
-    # # Get the path to the most recent model file
-    # latest_model_path = os.path.join(models_folder, model_files[1])
-    
-    # Load and return the most recent model
-    with open(model_files, "rb") as file:
+    # Load and return the model
+    with open(model_path, "rb") as file:
         model = pickle.load(file)
-    
-    return model
 
+    return model
+    
 model = load_model()
 
 
