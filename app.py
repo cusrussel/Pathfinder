@@ -894,18 +894,17 @@ def get_chart_data():
                 if strand_filter != 'All' and strand != strand_filter:
                     continue  # Skip this user if strand does not match
 
-                # Aggregate counts for output_1, output_2, and output_3
-                for output in ['output_1', 'output_2', 'output_3']:
-                    program = user.get(output)
-                    if program:
-                        if program not in data:
-                            data[program] = {}
+                # Focus on 'output_1' only
+                program = user.get('output_1')
+                if program:
+                    if program not in data:
+                        data[program] = {}
 
-                        # Increment the user count for this strand and program
-                        if strand in data[program]:
-                            data[program][strand] += 1
-                        else:
-                            data[program][strand] = 1
+                    # Increment the user count for this strand and program
+                    if strand in data[program]:
+                        data[program][strand] += 1
+                    else:
+                        data[program][strand] = 1
 
         return jsonify(data), 200  # Return JSON with HTTP 200 status code
 

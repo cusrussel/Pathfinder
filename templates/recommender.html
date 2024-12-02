@@ -33,7 +33,7 @@
         <h1>{{ question['question'] }}</h1>
         <div class="r-buttons">
             {% for option in question['options'] %}
-            <button style="font-size: 15px; width: 170px; height: 90px;"
+            <button style="font-size: 15px; width: fit-content;"
                     type="button"
                     data-field="{{ question['data_field'] }}"
                     data-value="{{ option['value'] }}"
@@ -102,7 +102,7 @@
       <div class = "r-result-left-buttons">
         <button onclick = "hideContentAgain()" >Take again<img src="/static/images/recommender/retry.svg" alt=""> </button>
         <button onclick = "toggleEmail()"> Send a copy<img src="/static/images/recommender/send.svg" alt=""></button>
-        <button id = "program-link" >More info<img src="/static/images/recommender/info.svg" alt=""> </button>
+        <button id = "program-link">More info<img src="/static/images/recommender/info.svg" alt=""></button>
       </div>
     </div>
     <div class = "r-result-right">

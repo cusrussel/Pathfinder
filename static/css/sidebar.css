@@ -526,8 +526,14 @@ body{
 }
 
 #question-form button {
-    width: auto;
-    margin-top: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease;
+    font-weight: 700;
     background-color: #28a745;
 }
 
