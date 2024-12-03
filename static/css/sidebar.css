@@ -653,10 +653,12 @@ body{
 }
 .program-information {
     position: sticky;
-    top: 0;
-    background-color: var(--white);
+    top: -15px;
     z-index: 100;
     padding: 10px 0;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    user-select: none;
 }
 
 .program-information div{
