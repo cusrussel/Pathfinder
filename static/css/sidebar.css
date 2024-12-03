@@ -646,8 +646,12 @@ body{
     padding: 5px;
 }
 
-.program-information,
-.program-direction {
+
+.program-information .close-button{
+    width: 40px;
+    background-color: var(--red);
+}
+.program-information {
     position: sticky;
     top: 0;
     background-color: var(--white);
