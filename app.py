@@ -372,7 +372,7 @@ def programs():
     programs = ref.get()  # This will return a list of programs
     
     # If the structure is a dictionary, loop through it and format it into a list
-    program_list = [{"program_id": idx, "name": program['name'], "category": program['categories']} 
+    program_list = [{"program_id": idx, "name": program['name'], "logo_url": program['logo_url'], "category": program['categories']} 
                     for idx, program in enumerate(programs)]
     return render_template('programs.html',  programs=program_list)
 
