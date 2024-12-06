@@ -566,14 +566,14 @@ def update_program(program_id):
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
         image.save(os.path.join(UPLOAD_FOLDER, filename))
-        image_url = f'/static/uploads/{filename}'
+        image_url = f'/static/images/uploads/{filename}'
         program['image_url'] = image_url  # Update the image URL in the database
 
     # Handle the logo upload (if any)
     if logo and allowed_file(logo.filename):
         logo_filename = secure_filename(logo.filename)
         logo.save(os.path.join(UPLOAD_FOLDER, logo_filename))
-        logo_url = f'/static/uploads/{logo_filename}'  # Store the relative path to the logo
+        logo_url = f'/static/images/uploads/{logo_filename}'  # Store the relative path to the logo
         program['logo_url'] = logo_url  # Update the logo URL in the database
 
     # Update other fields
